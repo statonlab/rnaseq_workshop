@@ -1,0 +1,402 @@
+---
+title: "R Intro I"
+author: "Ming Chen"
+date: "5/29/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+----------
+# Get/Set working directory
+
+```{r eval=FALSE}
+getwd()
+setwd('~/Desktop/rnaseq-workshop-2017')
+```
+
+----------
+# Install/Uninstall and load packages
+
+* Install package from CRAN
+
+```{r eval=FALSE}
+install.packages('ggplot2')
+library('ggplot2')
+require('ggplot2')
+```
+
+* Install package from local source file
+    + google 'ggplot2 tar.gz'
+    + https://cran.r-project.org/web/packages/ggplot2/index.html
+```{r eval=FALSE}
+remove.packages('ggplot2')
+## restart R
+library(ggplot2)
+require('ggplot2')
+install.packages('ggplot2_2.2.1.tar.gz', repos = NULL)
+require('ggplot2')
+```
+
+* Install bioconductor packages
+    + google 'deseq2 bioconductor'
+    + https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
+
+```{r eval=FALSE}
+source("https://bioconductor.org/biocLite.R")
+biocLite("DESeq2")
+require('DESeq2')
+packageVersion('DESeq2')
+```
+
+
+* Install package from github
+    + go to https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
+
+```{r eval=FALSE}
+remove.packages('DESeq2')
+# restart R
+require('DESeq2')
+
+install.packages('devtools')
+require('devtools')
+install_github('Bioconductor-mirror/DESeq2')
+install_github('Bioconductor-mirror/DESeq2', ref = 'release-3.3')
+packageVersion('DESeq2')
+## read this page if this doesn't work for you:
+## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906
+```
+
+* Install package from command line
+    + create an R script named 'install-r-packages.R' and put the following content into this file.
+    + Open your terminal and run command: `RScript install-r-packages.R`
+
+```{r eval=FALSE}
+pkgs = c('plyr', 'dplyr')
+install.packages(pkgs, repos = "http://cran.us.r-project.org")
+```
+
+
+# Get some help
+
+* The `?` function.
+* The `help()` function: `help(package='DESeq2')`
+* **google**
+
+
+# Data and Data Structures
+## R's built-in datasets
+
+```{r}
+data(package='base')
+data(package='ggplot2')
+data('mpg', package='ggplot2')
+mpg
+```
+
+## loading data
+
+Two most common data loading functions: ***`read.csv()`*** and ***`read.table()`***.
+    
+```{r}
+?read.csv
+read.csv('PBSC-comma.txt')
+read.csv('PBSC-tab.txt', sep = '\t')
+read.csv('PBSC-comma.txt', header=FALSE)
+```
+
+```{r}
+read.table('PBSC-tab.txt', header=TRUE) # does the header argument work?
+read.table('PBSC-tab.txt', header=TRUE, comment.char = '')
+
+# an example use case: load gtf file
+read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t', 
+         comment.char = '#')
+```
+
+
+## variables
+
+* Restrictions on variable names.
+    + Technically amostly no restrictions on variable names
+    + But **Most R programmers**
+        * starts with lower case letters
+        * separate words in names with underscores
+        * only use lower case letters, numbers and underscores
+```{r}
+x = 1:10
+x
+my_data = 1:10
+my_data
+my_data_2 = 1:5
+my_data_2
+
+assign(x = 'my_data', value = 3:8)
+my_data
+
+# some variable names that you should probably never use.
+assign(x = '2017', value = 1:10)
+'2017'
+get('2017')
+
+assign(x = '#', value = 'this is my value')
+get('#')
+```
+    
+* Assign the imported data to a variable.
+```{r}
+pbsc = read.csv('PBSC-comma.txt', header = TRUE)
+pbsc
+```
+
+
+## data structures
+
+* Data frame
+    + the most common data structure in R
+    + has two dimensions
+    
+```{r}
+is.data.frame(pbsc)
+
+str(pbsc)
+```
+
+
+* Vectors
+    + very basic data structure in R
+    + two flavors: atomic vectors and lists.
+```{r}
+x = 1:10
+x
+is.vector(x)
+
+# get a column from a data frame
+pbsc$G
+pbsc[, 1]
+# a column from a data frame is an atomic vectors
+is.vector(pbsc$G)
+is.data.frame(pbsc$G)
+
+# get a row from a data frame
+pbsc[1, ]
+# a row from a data frame is still a data frame.
+is.vector(pbsc[1, ])
+is.data.frame(pbsc[1, ])
+
+pbsc[1,]$G
+```
+
+
+* atomic vectors vs. lists
+    + atomic vectors are homogeneous. They can only have one type of values.
+    + lists are homogeneous or heterogenous. 
+    
+```{r}
+my_vector = c(1, 3, 5) # c() function combine values into a vector.
+my_vector
+
+my_v2 = c('a', 'b', 'c')
+my_v2
+
+my_v3 = c(1, 2, 'b') # automatically convert numbers to strings.
+my_v3
+
+my_list = list(a=1:3, b=c('a', 'b', 'd'))
+my_list
+my_list$a
+
+# any types of data can be an element of a list.
+my_l2 = list(a=1:3, b=c('a', 'b', 'd'), df=pbsc)
+my_l2
+my_l2$df
+my_l2[1]
+```
+
+
+* matrix
+    + two dimentional
+    + **homogeneous**
+
+```{r}
+my_matrix = matrix(1:12, nrow=3, ncol=4)
+my_matrix
+
+my_matrix_2 = matrix(letters[1:12], nrow=3, ncol=4)
+my_matrix_2
+
+# convert a heterogeneous data frame to a homogeneous matrix
+my_m3 = as.matrix(pbsc)
+my_m3
+
+# a column from a matrix is an vector
+my_m3[, 3]
+is.vector(my_m3[, 3])
+
+# a row from a matrix is still an vector
+my_m3[1, ]
+is.vector(my_m3[1, ])
+```
+
+## Subsetting operators: `[[`, `$`, and `[`
+
+* `$` is a shorthand for `[[`. It is useful when values are bound to character names. 
+* `$` is invalid for atomic vectors.
+* `[` is similar to `[[`. The difference is that `[[` can only return a single value, while `[[` can return multiple values.
+
+```{r}
+pbsc
+```
+
+* ***A data frame is also a list.***
+    + *the columns in the data frame are elements in the list.*
+
+
+```{r}
+is.data.frame(pbsc)
+is.list(pbsc)
+```
+
+
+### subsetting atomic vectors
+
+```{r}
+my_v1 = letters[1:10]
+my_v1
+
+# access single value
+my_v1[1]
+my_v1[[2]]
+
+# access multiple values
+my_v1[1:5]
+my_v1[c(1,5,9)]
+my_v1[c(1,3,3,3,1:10)] # get some elements repeatedly
+
+my_v1[[1:5]] # this won't work
+
+# access elements by names
+names(my_v1) = LETTERS[1:10]
+my_v1
+my_v1['A']
+my_v1[c('A','C','B')]
+
+my_v1$A # this won't work!
+```
+
+```{r}
+# A use case for accessing elements by names.
+
+my_sequence = sample(c('g', 'c', 't', 'a'), 20, replace = TRUE)
+my_sequence
+
+# how to convert lower case bases to upper case bases?
+my_template = c('G','C','T','A')
+names(my_template) = c('g', 'c', 't', 'a')
+my_template
+
+my_template[my_sequence] # yeah!!
+# you will see how useful this is when you use the ggplot2 package for data visualization.
+```
+
+
+### subsetting data frame
+
+```{r}
+# acess a single cell from data frame.
+pbsc[1,2]
+pbsc[[1,2]] # this will work since we are accessing single value.
+
+# access multiple values
+pbsc[1:5, ] # rows from 1 to 5
+pbsc[, 1:2] # columns from 1 to 2
+pbsc[1:5, 1:2] # subsetting by rows and columns
+
+pbsc[[1:5, ]] # this won't work
+
+# get one column from the data frame and remain the data structure.
+pbsc[, 3]
+is.vector(pbsc[, 3])
+
+pbsc[, 3, drop=FALSE]
+is.vector(pbsc[, 3, drop=FALSE])
+is.data.frame(pbsc[, 3, drop=FALSE])
+
+# elements in the index don't have to be unique.
+pbsc[, c(1:4, 4, 4)]
+nrow(pbsc)
+pbsc[c(1:2, 2, 2, 3:55), ]
+
+# use $
+pbsc$A
+pbsc$X.Base
+```
+
+
+### subsetting list
+
+```{r}
+my_l2 = list(a=1:3, b=c('a', 'b', 'd'), df=pbsc)
+my_l2
+
+# use $
+my_l2$a
+my_l2$df
+```
+
+
+```{r}
+# use index to access multiple elements.
+my_l2[1:3]
+my_l2[c(1,1,1,1,2,2,3)]
+
+my_l2[[1:3]] # this won't work!
+```
+
+**When `[` is applied to a list, it always returns a list. To access elements from an element within a list, we need the `[[` operator.**
+
+```{r}
+my_l2[1]
+is.list(my_l2[1])
+
+# how to get the second value from element 'a' in list 'my_l2'
+my_l2[1][2] # this won't work!!
+my_l2[1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1]
+
+my_l2[[1]]
+is.list(my_l2[[1]])
+is.vector(my_l2[[1]])
+
+my_l2[[1]][2] # this will return the second value from element 'a' in list 'my_l2'
+my_l2[[3]]
+my_l2[[3]]$G
+```
+
+### subsetting matrix
+
+```{r}
+pbsc_matrix = as.matrix(pbsc)
+pbsc_matrix
+
+# access columns
+pbsc_matrix[, 2]
+pbsc_matrix[, 2:3]
+
+# access rows
+pbsc_matrix[1:2, ]
+
+# '$' operator does not apply to matrix.
+pbsc_matrix$G # this won't work!!
+
+# get single column or rows and remain the data structure.
+pbsc_matrix[1, ]
+pbsc_matrix[1, ,drop=FALSE]
+
+pbsc_matrix[ , 2]
+pbsc_matrix[ , 2,drop=FALSE]
+```
+
+
+## Factors
