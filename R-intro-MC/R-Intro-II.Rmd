@@ -1,0 +1,202 @@
+---
+title: "R introduction: part II"
+author: "Ming Chen"
+date: "6/1/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+```
+
+
+# Functions
+
+* Define a function:
+
+```{r}
+my_function = function(x, y, z, ...) {
+  ## some code
+  
+  ## some other code
+}
+```
+
+
+* Call the function
+
+```{r}
+my_function(x=VALUE, y=VALUE, z=VALUE)
+```
+
+
+* Example: define a function to extract all columns between two column names from a data frame. 
+
+```{r}
+## load data
+pbsc = read.csv('PBSC-comma.txt', header = TRUE)
+
+## we can get multiple columns by position
+pbsc[2:4]
+
+## get columns by names
+get_columns_by_names = function(my_data_frame, first_name, last_name) {
+  df_column_names = colnames(my_data_frame)
+  first_position = which(df_column_names == first_name)
+  last_position = which(df_column_names == last_name)
+
+  my_data_frame[first_position:last_position]
+}
+
+## call the function
+get_columns_by_names(pbsc, "A", "C")
+get_columns_by_names(pbsc, "C", "A") # reversed
+```
+
+
+* Anonymous functions
+    + Functions that don't have a name.
+    + Usually used to create a closed environment for running some code.
+    
+```{r}
+function(x, y, z, ...) {
+  ## some code
+  
+  ## some other code
+}
+
+# will show you a use case in next section.
+```
+
+
+# Pipes and pipe operator
+
+A pipe is a sequence of operations. It reflects the data and analysis flow.
+
+The pipe operator `%>%` comes from the package **magrittr** by Stefan Milton Bache.
+
+```{r}
+# install.packages('magrittr')
+# install.packages('dplyr')
+library(dplyr)
+pbsc %>% 
+  head() %>% # the output from the previous operator will be the first argument in the next operator/function
+  `[`(2:4) # yes! '[' is a function.
+
+# the normal way to do this.
+`[`(pbsc, 2:4) 
+
+# use anonymous function in pipes
+workshop_comment = 'I really do not like the RNASeq workshop!'
+gsub('do not', 'do', workshop_comment)
+
+workshop_comment %>%
+  gsub('do not', 'do')  # this won't work because it takes workshop_comment as its first argument.
+
+
+workshop_comment %>% 
+  (function(comment) {
+    gsub('do not', 'do', comment)
+  })
+
+```
+
+
+# Data manipulation
+
+We are going to learn five important functions from the **dplyr** package. These five functions allows you
+to do a vast majority of data manipulation.
+
+* `filter()`: filter rows
+* `select()`: select variables by names
+* `arrange()`: reorder the rows
+* `mutate()`: create new variables by modifying existing variables
+* `summarise()`: collapse many values down to a single summary
+
+Here variables refer to data frame columns.
+
+## Filter rows with `filter()`
+
+`filter()` filters data frame by the logical values of expressions on columns. The first argument
+is a data frame. The second and subsequent arguments are expressions.
+
+```{r}
+# load the library first
+library(dplyr) 
+
+pbsc
+filter(pbsc, G > 25)
+filter(pbsc, G > 25, A > 25) # it can takes multiple expressions
+filter(pbsc, X.Base %in% 2:5 ) # get values from base 2 to 5
+
+# what does the logical values of expressions mean?
+pbsc$G > 25
+pbsc$G >25 & pbsc$A > 25
+pbsc$X.Base %in% 2:5
+
+# filter NA rows
+pbsc_na = pbsc
+pbsc_na$phred = sample(c(20:60, rep(NA, 10)), nrow(pbsc_na), replace = TRUE)
+pbsc_na
+
+pbsc_na %>%
+  filter(is.na(phred)) # select all rows that phred is NA
+
+pbsc_na %>%
+  filter(!is.na(phred)) # select all rows that phred is not NA
+```
+
+
+## Select columns by names with `select()`
+
+```{r}
+# select columns by names
+select(pbsc, G, A)
+
+# select all columns between G and C
+select(pbsc, G:C)
+
+# select all columns except those from G to C
+select(pbsc, -(G:C))
+
+# more cool stuff
+iris
+
+select(iris, starts_with('Sepal')) # names begin with 'Sepal'
+select(iris, ends_with('Length')) # names end with 'Length'
+select(iris, contains('al')) # names that contain 'al'
+select(iris, matches("\\.")) # select by a regular expression
+```
+
+
+## Reorder rows with `arrange()`
+
+```{r}
+iris
+arrange(iris, Petal.Length)
+arrange(iris, Petal.Length, Petal.Width) # sort by multiple columns
+
+arrange(iris, desc(Petal.Length)) # descending order
+```
+
+
+## Create new variables with `mutate()`
+
+```{r}
+mutate(pbsc, 
+       GC = G + C,
+       AT = A + G)
+
+
+# refer to columns that you've just created
+mutate(pbsc,
+       GC = G + C,
+       AT = A + G,
+       GA_to_AT = GC/AT)
+
+# if you only want to keep the new variables, use transmutate().
+transmute(pbsc,
+          GC = G + C,
+          AT = A + G,
+          GA_to_AT = GC/AT)
+```
