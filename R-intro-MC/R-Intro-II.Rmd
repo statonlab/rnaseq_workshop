@@ -199,4 +199,45 @@ transmute(pbsc,
           GC = G + C,
           AT = A + G,
           GA_to_AT = GC/AT)
+
+# a use case of combining multiple manipulating functions
+#  goal: select rows that are GC biased
+mutate(pbsc,
+       GC = G + C,
+       AT = A + G,
+       GC_bias = GC > AT) %>%
+  filter(GC_bias)
 ```
+
+
+## Operating on subsets of a data frame with `summarise()`
+
+`summarise()` is similar to `mutate()`. You operate on existing variables to new variables. But the new variables
+have to be one single value.
+
+```{r}
+summarise(pbsc, GC = G + C) # this won't work because the new variable has length > 1
+
+summarise(pbsc, average_G = mean(G)) # calculate the average of G content.
+
+```
+
+`summarise()` is usually used with `group_by()`. The `group_by()` converts a data frame to
+a grouped table. So operations can be performed on by group.
+
+```{r}
+mtcars
+
+grouped_mtcars = group_by(mtcars, cyl)
+grouped_mtcars # what does the data look like now?
+
+class(grouped_mtcars) # now it is a 'grouped_df' object.
+
+summarise(grouped_mtcars, mean(mpg)) # calculate average mpg for each number of cyl.
+
+# we can group the data by multiple variables.
+group_by(mtcars, cyl, gear, carb) %>%
+  summarise(mean(mpg), max(disp), min(wt))
+```
+
+

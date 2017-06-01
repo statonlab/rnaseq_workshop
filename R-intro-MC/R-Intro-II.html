@@ -265,6 +265,49 @@ arrange(iris, Petal.Length, Petal.Width) # sort by multiple columns
 
 arrange(iris, desc(Petal.Length)) # descending order</code></pre>
 </div>
+<div id="create-new-variables-with-mutate" class="section level2">
+<h2>Create new variables with <code>mutate()</code></h2>
+<pre class="r"><code>mutate(pbsc, 
+       GC = G + C,
+       AT = A + G)
+
+
+# refer to columns that you've just created
+mutate(pbsc,
+       GC = G + C,
+       AT = A + G,
+       GA_to_AT = GC/AT)
+
+# if you only want to keep the new variables, use transmutate().
+transmute(pbsc,
+          GC = G + C,
+          AT = A + G,
+          GA_to_AT = GC/AT)
+
+# a use case of combining multiple manipulating functions
+#  goal: select rows that are GC biased
+mutate(pbsc,
+       GC = G + C,
+       AT = A + G,
+       GC_bias = GC &gt; AT) %&gt;%
+  filter(GC_bias)</code></pre>
+</div>
+<div id="operating-on-subsets-of-a-data-frame-with-summarise" class="section level2">
+<h2>Operating on subsets of a data frame with <code>summarise()</code></h2>
+<p><code>summarise()</code> is similar to <code>mutate()</code>. You operate on existing variables to new variables. But the new variables have to be one single value.</p>
+<pre class="r"><code>summarise(pbsc, GC = G + C) # this won't work because the new variable has length &gt; 1
+
+summarise(pbsc, average_G = mean(G)) # calculate the average of G content.</code></pre>
+<p><code>summarise()</code> is usually used with <code>group_by()</code>. The <code>group_by()</code> converts a data frame to a grouped table. So operations can be performed on by group.</p>
+<pre class="r"><code>mtcars
+
+grouped_mtcars = group_by(mtcars, cyl)
+grouped_mtcars # what does the data look like now?
+
+class(grouped_mtcars) # now it is a 'grouped_df' object.
+
+summarise(grouped_mtcars, mean(mpg)) # calculate average mpg for each number of cyl.</code></pre>
+</div>
 </div>
 
 
