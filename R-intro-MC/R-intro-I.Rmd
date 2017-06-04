@@ -240,7 +240,9 @@ my_m3[1, ]
 is.vector(my_m3[1, ])
 ```
 
-## Subsetting operators: `[[`, `$`, and `[`
+## Subsetting operators
+
+There are three commonly used subsetting operators: `[[`, `$`, and `[`
 
 * `$` is a shorthand for `[[`. It is useful when values are bound to character names. 
 * `$` is invalid for atomic vectors.

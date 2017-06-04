@@ -9,6 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
+# Content
+
+* [Functions](#functions)
+* [Pipes and pipe operator](#pipes-and-pipe-operator)
+* [Data manipulation](#data-manipulation)
+* [The split-apply-combine strategy](#the-split-apply-combine-strategy)
 
 # Functions
 
@@ -223,7 +229,7 @@ summarise(pbsc, average_G = mean(G)) # calculate the average of G content.
 ```
 
 `summarise()` is usually used with `group_by()`. The `group_by()` converts a data frame to
-a grouped table. So operations can be performed on by group.
+a grouped table. So operations can be performed on data frame by group.
 
 ```{r}
 mtcars
@@ -238,6 +244,142 @@ summarise(grouped_mtcars, mean(mpg)) # calculate average mpg for each number of 
 # we can group the data by multiple variables.
 group_by(mtcars, cyl, gear, carb) %>%
   summarise(mean(mpg), max(disp), min(wt))
+```
+
+
+# The split-apply-combine strategy
+
+The split-apply-combine strategy is designed for parallel environment. You split your data into small pieces, apply a function to each pieces, and then combine the results to get your final results.
+
+The 12 key functions of package **plyr** that implement the split-apply-combine strategy:
+
+![](split-apply-combine.png)
+
+
+## The `a*ply` functions
+
+Three common ways to split an array. A matrix is a two dimensional array, and a vector is a one dimensional array. In most situation, you will apply the `a*ply` functions to a mtrix.
+
+There are three common ways to split a matrix:
+* split by row
+* split by column
+* split by row and column
+
+```{r}
+# install the plyr package if you haven't.
+# install.packages('plyr')
+library(plyr)
+```
+
+Example 1: calculate averages for each columns in data `mtcars` (split by column)
+
+```{r}
+# the data we use
+mtcars
+
+# split by column
+mtcars_matrix = as.matrix(mtcars) # convert data frame to matrix
+aaply(.data=mtcars_matrix, .margins=2, .fun=mean) # output is array
+adply(.data=mtcars_matrix, .margins=2, .fun=mean) # output is data frame
+alply(.data=mtcars_matrix, .margins=2, .fun=mean, .dims=TRUE) # output is lit
+a_ply(.data=mtcars_matrix, .margins=2, .fun=mean) # nothing returned
+```
+
+
+Example 2: convert absolute values to relative values (split by row). 
+
+```{r}
+mtcars_t = t(mtcars) # transpose the data
+head(mtcars_t) 
+
+# split the matrix by row, and then divide each element by the largest value from that row.
+aaply(.data=mtcars_t, .margins = 1, function(x){x/max(x)} )
+adply(.data=mtcars_t, .margins = 1, function(x){x/max(x)} )
+alply(.data=mtcars_t, .margins = 1, function(x){x/max(x)}, .dims = TRUE )
+```
+
+
+Example 3: split by row and column (apply function to each element in the matrix)
+
+```{r}
+mtcars_relative = aaply(.data=mtcars_t, .margins = 1, function(x){x/max(x)} )
+mtcars_relative
+
+aaply(.data = mtcars_relative, .margins = c(1, 2), 
+      .fun = function(x) {ifelse(x>0.5, yes = 'high', no = 'low')}) # define an anynomous function
+
+aaply(.data = mtcars_relative, .margins = c(1, 2),
+      .fun = ifelse, yes='high', no='low') # pass additional arguments to function
+```
+
+
+## The `d*ply` functions
+
+The `d*ply` functions split a data frame into **smaller data frames** by column(s) you select.
+
+```{r}
+# we still use the mtcars dataset
+mtcars
+```
+
+Example 1: calculate averages of all variables for each cyl.
+
+```{r}
+ddply(.data = mtcars, .variables = 'cyl', colMeans)
+```
+
+Example 2: split data frame with mulitple variables
+
+```{r}
+ddply(.data = mtcars, .variables = c('cyl', 'vs'), colMeans)
+```
+
+
+**Important: the function you apply to each pieces have to recognize the data structure of the pieces. For example, the `d*ply` functions split data frame into smaller data frames. You have to provide a function that can operate on data frames.**
+
+```{r}
+ddply(.data = mtcars, .variables = 'cyl', mean) # this will give you errors!
+
+ddply(.data = mtcars, .variables = .(cyl), summarise,
+      mean_mpg = mean(mpg),
+      sd_mpg = sd(mpg))
+
+# remember the combined use of group_by and summarise functions?
+mtcars_by_cyl = group_by(mtcars, cyl)
+summarise(mtcars_by_cyl,
+          mean_mpg = mean(mpg),
+          sd_mpg = sd(mpg))
+```
+
+
+## The `l*ply` functions
+
+The `l*ply` functions split **lists or vectors** into single elements, and then apply a function to each elements.
+
+Example 1: split a list.
+
+```{r}
+mtcars_list = as.list(mtcars)
+mtcars_list
+
+ldply(.data = mtcars_list, .fun = mean)
+```
+
+Remember that a list can contain any types of data. What if we have a list of functions? Instead of splitting data, can we split a list of functions, and then apply each of these functions to our data?
+
+```{r}
+my_functions = list(mean, sum, sd, max, min, length)
+my_functions
+
+laply(.data = my_functions, function(x) {x(mtcars$mpg)})
+
+# same as
+c( mean(mtcars$mpg),
+   sum(mtcars$mpg),
+   sd(mtcars$mpg),
+   max(mtcars$mpg),
+   min(mtcars$mpg),
+   length(mtcars$mpg) )
 ```
 
 
