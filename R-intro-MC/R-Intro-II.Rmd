@@ -383,3 +383,76 @@ c( mean(mtcars$mpg),
 ```
 
 
+## The `*_ply` functions
+
+* `a_ply()`
+* `d_ply()`
+* `l_ply()`
+
+These functions split the data, apply a function to each pieces, but discard the results.
+
+Example: plot variable **mpg** against any other variables from the **mtcars** dataset.
+
+```{r}
+mtcars_list = as.list(mtcars)
+
+# remember why we use '[[' instead of '['?
+l_ply(mtcars_list, plot, y=mtcars_list[['mpg']], ylab='mpg')
+```
+
+But all the plots have the same label on the x axis. Can we label the x axis with the corresponding variable name?
+
+```{r}
+list_names = names(mtcars_list)
+list_names
+
+l_ply(list_names, function(x){
+  plot(x=mtcars_list[[x]], y=mtcars_list[['mpg']], xlab = x, ylab = 'mpg')
+})
+```
+
+
+**Save plots into files**
+
+```{r}
+l_ply(list_names, function(x){
+  png(filename = paste0(x, '.png'))
+  plot(x=mtcars_list[[x]], y=mtcars_list[['mpg']], xlab = x, ylab = 'mpg')
+  dev.off()
+})
+```
+
+
+## Save the results from `*_ply` functions with `<<-` operator
+
+`<<-` operator is usually used in functions. It is similar to the **assign** operator `<-` (or `=`). `<<-` operator assign value to a variable name. The difference is if the variable name does not exist in the current environment, it will search for the name in the parent environments until it finds the variable name.
+
+
+Example: do normality tests on each variable in **mtcars** and save the results
+```{r}
+# shapiro test
+shapiro.test(mtcars$mpg)
+# statistic W
+shapiro.test(mtcars$mpg)$statistic
+# p value
+shapiro.test(mtcars$mpg)$p.value
+
+single_res = c(shapiro.test(mtcars$mpg)$statistic,
+               shapiro.test(mtcars$mpg)$p.value)
+names(single_res) = c('W', 'p value')
+single_res
+
+# create a list 
+shapiro_results = list()
+
+ldply(list_names, function(x){
+  single_res = c(shapiro.test(mtcars[[x]])$statistic,
+               shapiro.test(mtcars[[x]])$p.value)
+  names(single_res) = c('W', 'p value')
+  shapiro_results[[x]] <<- single_res
+})
+
+# we can easily convert a list of elements equal in length to a data frame.
+as.data.frame(shapiro_results)
+```
+
