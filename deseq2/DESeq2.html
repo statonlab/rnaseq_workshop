@@ -316,7 +316,7 @@ my.padj[1:30] ## compare your adjusted p values with the values from the results
 </div>
 <div id="export-results-into-a-tab-separated-file" class="section level2">
 <h2>Export results into a tab separated file</h2>
-<p>To complement the differential expression results, annotations are added to each row.</p>
+<p>Only significant results are exported.</p>
 <pre class="r"><code>myRes.sig &lt;- subset(myRes, padj &lt; 0.05)
 myRes.sig</code></pre>
 <pre><code>## log2 fold change (MAP): pheno lateFlower vs earlyFlower 
@@ -348,10 +348,73 @@ myRes.sig</code></pre>
 ## Prupe.I002800  0.0060738337
 ## Prupe.I003100  0.0399097660
 ## Prupe.I004400  0.0000423348</code></pre>
+<p>To complement the differential expression results, annotations are added to each row. The annotation data table is loaded using <code>read.table()</code>. It is a tab separated file with many empty fields. * When <code>header</code> is turned on, the names on the first row are used as column names * The option <code>fill</code> is activated to add blank fields where data is missing * <code>quote = &quot;\&quot;&quot;</code> is set to avoid interpretation of single quotes in gene names, such as 5’-nucleotidase</p>
 <pre class="r"><code>## load annotation data
 anno &lt;- read.table(&quot;Ppersica_298_v2.1.annotation_info.txt&quot;, header=TRUE, sep=&quot;\t&quot;, fill=TRUE, quote = &quot;\&quot;&quot;)
+head(anno)</code></pre>
+<pre><code>##      pacId      locusName   transcriptName        peptideName    Pfam
+## 1 32111137 Prupe.1G000100 Prupe.1G000100.1 Prupe.1G000100.1.p PF03810
+## 2 32111138 Prupe.1G000100 Prupe.1G000100.2 Prupe.1G000100.2.p PF03810
+## 3 32112741 Prupe.1G000200 Prupe.1G000200.1 Prupe.1G000200.1.p PF02519
+## 4 32118687 Prupe.1G000300 Prupe.1G000300.1 Prupe.1G000300.1.p        
+## 5 32118688 Prupe.1G000300 Prupe.1G000300.2 Prupe.1G000300.2.p        
+## 6 32114906 Prupe.1G000400 Prupe.1G000400.1 Prupe.1G000400.1.p PF00481
+##                     Panther     KOG  KEGG.ec     KO
+## 1   PTHR10997,PTHR10997:SF7                        
+## 2   PTHR10997,PTHR10997:SF7                        
+## 3  PTHR31374,PTHR31374:SF51                  K14488
+## 4   PTHR10997,PTHR10997:SF7                        
+## 5   PTHR10997,PTHR10997:SF7                        
+## 6 PTHR13832,PTHR13832:SF329 KOG0698 3.1.3.16 K17506
+##                                 GO Best.hit.arabi.name arabi.symbol
+## 1            GO:0008536,GO:0006886         AT3G08960.1             
+## 2            GO:0008536,GO:0006886         AT3G08960.1             
+## 3                       GO:0009733         AT5G10990.1             
+## 4                                          AT3G08960.1             
+## 5                                          AT3G08960.1             
+## 6 GO:0003824,GO:0006470,GO:0004722         AT4G28400.1             
+##                                arabi.defline
+## 1             ARM repeat superfamily protein
+## 2             ARM repeat superfamily protein
+## 3 SAUR-like auxin-responsive protein family 
+## 4             ARM repeat superfamily protein
+## 5             ARM repeat superfamily protein
+## 6      Protein phosphatase 2C family protein</code></pre>
+<p>The annotation file contains multiple rows for many genes on <code>locusName</code>. We need to get rid of the extra rows before merging the annotation with our differential expression results. We subset the annotation table <code>anno</code> for those rows that do noc tontain duplicated locus names.</p>
+<pre class="r"><code>## keep first row for each unique gene in locusName
 anno &lt;- anno[!duplicated(anno[,2]),]
-myRes.anno &lt;- merge(as.data.frame(myRes.sig), anno, by.x=&quot;row.names&quot;, by.y=&quot;locusName&quot;, all = TRUE, all.y = FALSE)
+head(anno)</code></pre>
+<pre><code>##      pacId      locusName   transcriptName        peptideName
+## 1 32111137 Prupe.1G000100 Prupe.1G000100.1 Prupe.1G000100.1.p
+## 3 32112741 Prupe.1G000200 Prupe.1G000200.1 Prupe.1G000200.1.p
+## 4 32118687 Prupe.1G000300 Prupe.1G000300.1 Prupe.1G000300.1.p
+## 6 32114906 Prupe.1G000400 Prupe.1G000400.1 Prupe.1G000400.1.p
+## 7 32112761 Prupe.1G000500 Prupe.1G000500.1 Prupe.1G000500.1.p
+## 8 32113080 Prupe.1G000600 Prupe.1G000600.1 Prupe.1G000600.1.p
+##              Pfam                   Panther     KOG  KEGG.ec     KO
+## 1         PF03810   PTHR10997,PTHR10997:SF7                        
+## 3         PF02519  PTHR31374,PTHR31374:SF51                  K14488
+## 4                   PTHR10997,PTHR10997:SF7                        
+## 6         PF00481 PTHR13832,PTHR13832:SF329 KOG0698 3.1.3.16 K17506
+## 7 PF00560,PF08263                 PTHR32093                        
+## 8         PF00642                                            K14321
+##                                 GO Best.hit.arabi.name arabi.symbol
+## 1            GO:0008536,GO:0006886         AT3G08960.1             
+## 3                       GO:0009733         AT5G10990.1             
+## 4                                          AT3G08960.1             
+## 6 GO:0003824,GO:0006470,GO:0004722         AT4G28400.1             
+## 7                       GO:0005515         AT1G62440.1         LRX2
+## 8                       GO:0046872         AT1G75340.1             
+##                                      arabi.defline
+## 1                   ARM repeat superfamily protein
+## 3       SAUR-like auxin-responsive protein family 
+## 4                   ARM repeat superfamily protein
+## 6            Protein phosphatase 2C family protein
+## 7                   leucine-rich repeat/extensin 2
+## 8 Zinc finger C-x8-C-x5-C-x3-H type family protein</code></pre>
+<p>We are ready to merge the tables. We need to convert our DESeq object containing our results to a <code>data.frame</code> object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with <code>all.x = TRUE</code>, and not to print non-matched lines in the second file with <code>all.y = FALSE</code>. Finally, results are exported to a file separated with tab. This file will contain quoted names. To remove them, the option <code>quote = &quot;&quot;</code> should be added.</p>
+<pre class="r"><code>## add annotations as new columns to our results
+myRes.anno &lt;- merge(as.data.frame(myRes.sig), anno, by.x=&quot;row.names&quot;, by.y=&quot;locusName&quot;, all.x = TRUE, all.y = FALSE)
 
 ## write annotated results to table
 write.table(myRes.anno, file=&quot;myRes_sig.txt&quot;, sep = &quot;\t&quot;, row.names = F)</code></pre>

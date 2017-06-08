@@ -1,13 +1,13 @@
 ---
 title: "RNASeq workshop DESeq2 2017"
-author: "Miriam Pay√° Milans"
+author: "Miriam Pay· Milans"
 date: "June 16, 2017"
 output: html_document
 ---
 
 
 ```{r warning=F, message=F}
-setwd("E:/UT/rnaseq_ws/2017/deseq")
+setwd("E:/UT/rnaseq_ws/2017/deseq2")
 library(DESeq2)
 ```
 
@@ -79,8 +79,8 @@ dim(myDESeqData)
 * Results are extracted using `results()`.
 
 ```{r}
-myDESeq.Res = DESeq(myDESeqData)
-myRes = results(myDESeq.Res, alpha=0.05)
+myDESeq.Res <- DESeq(myDESeqData)
+myRes <- results(myDESeq.Res, alpha=0.05)
 summary(myRes)
 myRes
 ```
@@ -101,8 +101,8 @@ myRes
 * Significant genes are those that padj is less than __alpha__
 
 ```{r}
-pvalues = subset(myRes, !is.na(padj))[,'pvalue']
-my.padj = p.adjust(pvalues, method='BH') ## calculate adjusted p value
+pvalues <- subset(myRes, !is.na(padj))[,'pvalue']
+my.padj <- p.adjust(pvalues, method='BH') ## calculate adjusted p value
 my.padj[1:30] ## compare your adjusted p values with the values from the results table
 subset(myRes, !is.na(padj))[,'padj'][1:30]
 ```
@@ -115,15 +115,36 @@ plotMA(myRes, main="lateFlower vs earlyFlower", ylim=c(-8,8))
 ```
 
 ## Export results into a tab separated file
-To complement the differential expression results, annotations are added to each row.
+Only significant results are exported.
 ```{r}
-myRes.sig = subset(myRes, padj < 0.05)
+myRes.sig <- subset(myRes, padj < 0.05)
 myRes.sig
+```
+To complement the differential expression results, annotations are added to each row. The annotation data table is loaded using `read.table()`. It is a tab separated file with many empty fields.
+* When `header` is turned on, the names on the first row are used as column names
+* The option `fill` is activated to add blank fields where data is missing
+* `quote = "\""` is set to avoid interpretation of single quotes in gene names, such as 5'-nucleotidase 
 
+```{r}
 ## load annotation data
 anno <- read.table("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE, quote = "\"")
+head(anno)
+```
+
+The annotation file contains multiple rows for many genes on `locusName`. We need to get rid of the extra rows before merging the annotation with our differential expression results. We subset the annotation table `anno` for those rows that do noc tontain duplicated locus names.
+
+```{r}
+## keep first row for each unique gene in locusName
 anno <- anno[!duplicated(anno[,2]),]
-myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x="row.names", by.y="locusName", all = TRUE, all.y = FALSE)
+head(anno)
+```
+
+We are ready to merge the tables. We need to convert our DESeq object containing our results to a `data.frame` object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with `all.x = TRUE`, and not to print non-matched lines in the second file with `all.y = FALSE`.
+Finally, results are exported to a file separated with tab. This file will contain quoted names. To remove them, the option `quote = ""` should be added.
+
+```{r}
+## add annotations as new columns to our results
+myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x="row.names", by.y="locusName", all.x = TRUE, all.y = FALSE)
 
 ## write annotated results to table
 write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
@@ -143,15 +164,15 @@ write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
     + Variance stabilizing transformation, so that the variance becomes constant relative to the mean
 
 ```{r}
-rl.myDESeqData = rlog(myDESeqData, fitType = "mean")
-vsd.myDESeqData =  varianceStabilizingTransformation(myDESeqData, fitType = "mean")
+rl.myDESeqData <- rlog(myDESeqData, fitType = "mean")
+vsd.myDESeqData <- varianceStabilizingTransformation(myDESeqData, fitType = "mean")
 ```
 
 ### Sample and gene clustering using heatmap
 ```{r}
 ## select count data only for the top 50 significant genes
-rl.heatmap = assay(rl.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ]) 
-vsd.heatmap = assay(vsd.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ])
+rl.heatmap <- assay(rl.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ]) 
+vsd.heatmap <- assay(vsd.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ])
 
 library(pheatmap)
 pheatmap(rl.heatmap)
