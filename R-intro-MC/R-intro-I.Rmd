@@ -80,7 +80,7 @@ packageVersion('DESeq2')
 ```
 
 * Install package from command line
-    + create an R script named 'install-r-packages.R' and put the following content into this file.
+    + create an R script named `install-r-packages.R` and put the following content into this file.
     + Open your terminal and run command: `RScript install-r-packages.R`
 
 ```{r eval=FALSE}
