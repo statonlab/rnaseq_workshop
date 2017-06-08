@@ -1,6 +1,6 @@
 ---
 title: "RNASeq workshop DESeq2 2017"
-author: "Miriam Pay· Milans"
+author: "Miriam Pay√° Milans"
 date: "June 16, 2017"
 output: html_document
 ---
@@ -114,19 +114,19 @@ The function plotMA shows the log2 fold changes, coloring points in red if the a
 plotMA(myRes, main="lateFlower vs earlyFlower", ylim=c(-8,8))
 ```
 
-## Export results into a csv file
+## Export results into a tab separated file
 To complement the differential expression results, annotations are added to each row.
 ```{r}
 myRes.sig = subset(myRes, padj < 0.05)
 myRes.sig
 
 ## load annotation data
-anno <- read.table("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE)
+anno <- read.table("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE, quote = "\"")
 anno <- anno[!duplicated(anno[,2]),]
 myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x="row.names", by.y="locusName", all = TRUE, all.y = FALSE)
 
-## write annotated results to csv
-write.csv(myRes.anno, file="myRes_sig.csv")
+## write annotated results to table
+write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
 ```
 
 
