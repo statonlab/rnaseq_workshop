@@ -9,16 +9,26 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
-----------
-# Get/Set working directory
+# Content
+
+* [Set working directory](#set-working-directory)
+* [Install packages](#install-packages)
+* [Get some help](#get-some-help)
+* [Data and data structures](#data-and-data-structures)
+* [Subsetting operators](#subsetting-operators)
+* [Factors](#factors)
+* [Write data into files](#write-data-into-files)
+
+
+# Set working directory
 
 ```{r eval=FALSE}
 getwd()
 setwd('~/Desktop/rnaseq-workshop-2017')
 ```
 
-----------
-# Install/Uninstall and load packages
+
+# Install packages
 
 * Install package from CRAN
 
@@ -86,8 +96,8 @@ install.packages(pkgs, repos = "http://cran.us.r-project.org")
 * **google**
 
 
-# Data and Data Structures
-## R's built-in datasets
+# Data and data structures
+## Bbuilt-in datasets
 
 ```{r}
 data(package='base')
@@ -402,3 +412,112 @@ pbsc_matrix[ , 2,drop=FALSE]
 
 
 ## Factors
+
+When you import data from a file, R treat string columns as factors by default.
+
+```{r}
+pbsc = read.csv('PBSC-comma.txt', header = TRUE)
+pbsc$X.Base
+
+# the stringsAsFactors argument
+pbsc_str = read.csv('PBSC-comma.txt', header = TRUE, stringsAsFactors = FALSE)
+pbsc_str$X.Base
+```
+
+Factors are used to store categorical data and are built on top of integer vectors.
+
+You need two components to define a factor:
+
+* A set of predefined categories (or **levels**)
+* A vector that contain values only from those categories.
+
+```{r}
+# a set of categories: c('a', 'b', 'c')
+# a vector: c('b', 'c', 'b', 'a', 'b')
+factor_x1 = factor(levels = c('a', 'b', 'c'), x = c('b', 'c', 'b', 'a', 'b'))
+factor_x1
+
+# the vector does not have to contain all categories
+factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b'))
+factor_x2
+```
+
+**If you don't provide the category set, it will use the unique values from the vector as the category set**
+
+```{r}
+factor_x3 = factor(x = c('a', 'c', 'e', 'e', 'f', 'a'))
+factor_x3
+```
+
+
+**How to understand that factors are built on top of integer vectors?**
+
+```{r}
+factor_x1
+as.integer(factor_x1)
+
+factor_x3
+as.integer(factor_x3)
+
+# compare factors with string vectors
+str_v1 = c('a', 'c', 'e', 'e', 'f', 'a')
+as.integer(str_v1) 
+
+str_v2 = c('1', '3', '4', '1') 
+as.integer(str_v2)
+```
+
+
+**How are factor elements mapped to integers?**
+* The factor elements are mapped to an integer **sequence that starts from 1**, and the mapping order is **determined by the order of factor levels**.
+
+
+```{r}
+factor_x1 = factor(levels = c('a', 'b', 'c'), x = c('b', 'c', 'b', 'a', 'b'))
+factor_x1
+as.integer(factor_x1)
+
+factor_x4 = factor(levels = c('c', 'b', 'a'), x = c('b', 'c', 'b', 'a', 'b'))
+factor_x4
+as.integer(factor_x4)
+as.integer(factor_x1)
+```
+
+Different level orders can result in different data analysis results due to the change in reference order. Next time when you do a linear regression analysis, try to reset the level orders for your categorical variables and see that happens.
+
+## Write data into files
+
+* `write.table()`
+* `write.csv()`
+* `sink()`
+
+```{r}
+mtcars
+
+write.table(x = mtcars, file = 'mtcars.txt', col.names = TRUE, row.names = TRUE)
+write.csv(x = mtcars, file = 'mtcars.csv', col.names = TRUE) # generates a message
+# let's open the help document for write.csv
+?write.csv
+
+write.csv(x = mtcars, file = 'mtcars.csv')
+
+# recomend using write.table
+# of course you can save the data into a csv file
+write.table(x = mtcars, file = 'mtcars.csv', col.names = TRUE, row.names = TRUE)
+write.table(x = mtcars, file = 'mtcars_2.csv', col.names = FALSE, row.names = FALSE)
+```
+
+
+`sink()` diverts R output to a connection.
+
+```{r}
+# open a connection by providing a file path
+sink(file = 'my_linear_regression_analysis.txt')
+
+# all outputs that usually go to your screen will be saved into the file.
+lm(mpg~., data = mtcars) 
+summary(lm(mpg~., data = mtcars))
+
+# close the connection
+sink()
+```
