@@ -1,0 +1,178 @@
+---
+title: "RNASeq workshop DESeq2 2017"
+author: "Miriam Payá Milans"
+date: "June 16, 2017"
+output: html_document
+---
+
+
+```{r warning=F, message=F}
+setwd("E:/UT/rnaseq_ws/2017/deseq")
+library(DESeq2)
+```
+
+## Data pre-processing
+
+### Count data files
+Our output files from HTSeq-count indicate genes on the first column and gene counts on the second column. This is how they look like.
+
+![Count data files](datawehave.png)
+
+The first step is to load the files into the R session using the `DESeqDataSetFromHTSeqCount()` function, which generates an object recognized by `DESeq()`. To do so, we need to generate a table specifying the sample name in the first column, the count file name on the second column and metadata on the remaining columns.
+
+```{r}
+## get file names
+fileName <- list.files(path = "./countData/", pattern = "*.txt")
+fileName
+
+## get sample names
+sampleName <- sapply(strsplit(fileName, "[.]"), "[[", 1)
+sampleName
+
+## get phenotypes
+pheno <-  sapply(strsplit(fileName, "-"), "[[", 1)
+pheno <- as.factor(pheno)
+pheno
+
+## build the sample table
+mySampleTable <- data.frame(sampleName, fileName, pheno)
+mySampleTable
+```
+
+With this table, we are ready to load the count data.
+
+### DESeqDataSet object: the data structure that `DESeq()` can recognize
+
+The core function for differential analysis is `DESeq()`. But before we can use `DESeq()`, we need to preprocess our data so that the `DESeq()` can recognize it.
+
+```{r}
+## get DESeqDataSet object
+myDESeqData <- DESeqDataSetFromHTSeqCount(sampleTable = mySampleTable, 
+                                         directory = './countData', design = ~pheno)
+myDESeqData
+```
+
+
+After loading our files, we'll have a data matrix showing gene expression levels, with genes in rows and samples in columns
+
+* 26873 genes
+* Two genotypes with distinct phenotypes
+* Each genotype has 3 clonal replicates
+
+```{r}
+head(counts(myDESeqData))
+```
+
+### Pre-filtering
+Filtering of low count data is not necessary to run DESeq, but it can reduce memory usage.
+
+```{r}
+dim(myDESeqData)
+myDESeqData <- myDESeqData[ rowSums(counts(myDESeqData)) > 1, ]
+dim(myDESeqData)
+```
+
+
+## Differential expression analysis
+
+* The necessary steps for differential expression analysis are wrapped into a single function `DESeq()`.
+* Results are extracted using `results()`.
+
+```{r}
+myDESeq.Res = DESeq(myDESeqData)
+myRes = results(myDESeq.Res, alpha=0.05)
+summary(myRes)
+myRes
+```
+
+### Reasons for NA values
+* In cases where all samples have zero counts, log2FoldChange, pvalue and padj will be NA
+* When a sample has an extreme count outlier, the pvalue and padj will also be NA
+* Genes with low mean normalized counts are filtered out by automatic independent filtering and padj is NA.
+    + The goal is to filter out tests that have no or little chance of showing significant evidence
+    + This filtering results in increased detection power at the same type I error (or False Discovery Rate)
+    + Independent filtering can be turned off in `DESeq()`
+
+### p value, adjusted p value (padj)  and alpha
+
+* P value is for a single test
+* P values have to be adjusted to control for type I error (False Discovery Rate) with multiple testing
+* Default type I error cutoff __alpha__ is 0.1. This can be set in `results()`
+* Significant genes are those that padj is less than __alpha__
+
+```{r}
+pvalues = subset(myRes, !is.na(padj))[,'pvalue']
+my.padj = p.adjust(pvalues, method='BH') ## calculate adjusted p value
+my.padj[1:30] ## compare your adjusted p values with the values from the results table
+subset(myRes, !is.na(padj))[,'padj'][1:30]
+```
+
+### Exploring results
+The function plotMA shows the log2 fold changes, coloring points in red if the adjusted p value is less than 0.05.
+
+```{r}
+plotMA(myRes, main="lateFlower vs earlyFlower", ylim=c(-8,8))
+```
+
+## Export results into a csv file
+To complement the differential expression results, annotations are added to each row.
+```{r}
+myRes.sig = subset(myRes, padj < 0.05)
+myRes.sig
+
+## load annotation data
+anno <- read.table("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE)
+anno <- anno[!duplicated(anno[,2]),]
+myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x="row.names", by.y="locusName", all = TRUE, all.y = FALSE)
+
+## write annotated results to csv
+write.csv(myRes.anno, file="myRes_sig.csv")
+```
+
+
+## Data visualization
+### Data transformation
+* Gene expression data usually has inconsistent variance
+* The variance is usually very high for count data when the mean is low
+* Transformation methods are applied to remove the dependence of the variance on the mean
+* Useful for graphical visualization or clustering
+
+### The common transformation methods
+* Transformation of data on the log2 scale which has been normalized with respect to library size
+    + Regularized logarithm transformation
+    + Variance stabilizing transformation, so that the variance becomes constant relative to the mean
+
+```{r}
+rl.myDESeqData = rlog(myDESeqData, fitType = "mean")
+vsd.myDESeqData =  varianceStabilizingTransformation(myDESeqData, fitType = "mean")
+```
+
+### Sample and gene clustering using heatmap
+```{r}
+## select count data only for the top 50 significant genes
+rl.heatmap = assay(rl.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ]) 
+vsd.heatmap = assay(vsd.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ])
+
+library(pheatmap)
+pheatmap(rl.heatmap)
+pheatmap(vsd.heatmap)
+```
+
+### Heatmap of the sample-to-sample distances
+The distance between samples can be calculated using the `dist()` function of the transpose of the transformed count matrix. The heatmap shows the similarities between samples.
+```{r}
+sampleDists <- dist(t(assay(rl.myDESeqData)))
+sampleDistMatrix <- as.matrix(sampleDists)
+colnames(sampleDistMatrix) <- NULL
+my_palette <- colorRampPalette(c( "Blue", "white"))(n = 100)
+pheatmap(sampleDistMatrix, col=my_palette)
+```
+
+### Principal Component Analysis (PCA) plot of samples
+This is another option to see distance of samples.
+
+```{r}
+plotPCA(rl.myDESeqData[rownames(myRes.sig), ], intgroup="pheno")
+plotPCA(vsd.myDESeqData[rownames(myRes.sig), ], intgroup="pheno")
+```
+
