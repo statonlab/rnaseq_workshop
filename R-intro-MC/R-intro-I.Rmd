@@ -93,7 +93,14 @@ install.packages(pkgs, repos = "http://cran.us.r-project.org")
 
 * The `?` function.
 * The `help()` function: `help(package='DESeq2')`
+* The `swirl()` package is an interactive tutorial for learning R 
 * **google**
+
+### Comments
+Note that like many programming language, lines that start with a `#` are comments and are not interpreted. 
+```{r eval=FALSE}
+# You can write notes and annotate your code in comments!
+```
 
 
 # Data and data structures
@@ -159,8 +166,12 @@ get('#')
 ```{r}
 pbsc = read.csv('PBSC-comma.txt', header = TRUE)
 pbsc
-```
 
+pbsc <- read.csv('PBSC-comma.txt', header = TRUE)
+
+pbsc
+```
+You might see the `<-` assignment in people's code.  It is the same as `=`.
 
 ## data structures
 
@@ -413,7 +424,7 @@ pbsc_matrix[ , 2,drop=FALSE]
 
 ## Factors
 
-When you import data from a file, R treat string columns as factors by default.
+When you import data from a file, R treats string columns as factors by default.
 
 ```{r}
 pbsc = read.csv('PBSC-comma.txt', header = TRUE)

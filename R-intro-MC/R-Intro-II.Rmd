@@ -110,8 +110,8 @@ workshop_comment %>%
 
 # Data manipulation
 
-We are going to learn five important functions from the **dplyr** package. These five functions allows you
-to do a vast majority of data manipulation.
+We are going to learn five important functions from the **dplyr** package. These five functions allow you
+to do the vast majority of data manipulation.
 
 * `filter()`: filter rows
 * `select()`: select variables by names
@@ -218,8 +218,7 @@ mutate(pbsc,
 
 ## Operating on subsets of a data frame with `summarise()`
 
-`summarise()` is similar to `mutate()`. You operate on existing variables to new variables. But the new variables
-have to be one single value.
+`summarise()` is similar to `mutate()`. You operate on existing variables, creating new variables. Note the new variables have to be single value (hence, summarised).
 
 ```{r}
 summarise(pbsc, GC = G + C) # this won't work because the new variable has length > 1
