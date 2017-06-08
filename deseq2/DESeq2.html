@@ -380,7 +380,7 @@ head(anno)</code></pre>
 ## 4             ARM repeat superfamily protein
 ## 5             ARM repeat superfamily protein
 ## 6      Protein phosphatase 2C family protein</code></pre>
-<p>The annotation file contains multiple rows for many genes on <code>locusName</code>. We need to get rid of the extra rows before merging the annotation with our differential expression results. We subset the annotation table <code>anno</code> for those rows that do noc tontain duplicated locus names.</p>
+<p>The annotation file contains multiple rows for many genes on <code>locusName</code>. We need to get rid of the extra rows before merging the annotation with our differential expression results. We subset the annotation table <code>anno</code> for those rows that do not contain duplicated locus names.</p>
 <pre class="r"><code>## keep first row for each unique gene in locusName
 anno &lt;- anno[!duplicated(anno[,2]),]
 head(anno)</code></pre>
@@ -412,12 +412,13 @@ head(anno)</code></pre>
 ## 6            Protein phosphatase 2C family protein
 ## 7                   leucine-rich repeat/extensin 2
 ## 8 Zinc finger C-x8-C-x5-C-x3-H type family protein</code></pre>
-<p>We are ready to merge the tables. We need to convert our DESeq object containing our results to a <code>data.frame</code> object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with <code>all.x = TRUE</code>, and not to print non-matched lines in the second file with <code>all.y = FALSE</code>. Finally, results are exported to a file separated with tab. This file will contain quoted names. To remove them, the option <code>quote = &quot;&quot;</code> should be added.</p>
+<p>We are ready to merge the tables. We need to convert the DESeq object with our results to a <code>data.frame</code> object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with <code>all.x = TRUE</code>, and not to print non-matched lines in the second file with <code>all.y = FALSE</code>. Finally, results are exported to a file separated with tab. This file will contain quoted names. To remove them, the option <code>quote = &quot;&quot;</code> should be added.</p>
 <pre class="r"><code>## add annotations as new columns to our results
-myRes.anno &lt;- merge(as.data.frame(myRes.sig), anno, by.x=&quot;row.names&quot;, by.y=&quot;locusName&quot;, all.x = TRUE, all.y = FALSE)
+myRes.anno &lt;- merge(as.data.frame(myRes.sig), anno, by.x = &quot;row.names&quot;, by.y = &quot;locusName&quot;, all.x = TRUE, all.y = FALSE)
 
 ## write annotated results to table
 write.table(myRes.anno, file=&quot;myRes_sig.txt&quot;, sep = &quot;\t&quot;, row.names = F)</code></pre>
+<p>This file can be opened in Excel.</p>
 </div>
 <div id="data-visualization" class="section level2">
 <h2>Data visualization</h2>

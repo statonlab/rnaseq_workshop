@@ -131,7 +131,7 @@ anno <- read.table("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t
 head(anno)
 ```
 
-The annotation file contains multiple rows for many genes on `locusName`. We need to get rid of the extra rows before merging the annotation with our differential expression results. We subset the annotation table `anno` for those rows that do noc tontain duplicated locus names.
+The annotation file contains multiple rows for many genes on `locusName`. We need to get rid of the extra rows before merging the annotation with our differential expression results. We subset the annotation table `anno` for those rows that do not contain duplicated locus names.
 
 ```{r}
 ## keep first row for each unique gene in locusName
@@ -139,17 +139,18 @@ anno <- anno[!duplicated(anno[,2]),]
 head(anno)
 ```
 
-We are ready to merge the tables. We need to convert our DESeq object containing our results to a `data.frame` object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with `all.x = TRUE`, and not to print non-matched lines in the second file with `all.y = FALSE`.
+We are ready to merge the tables. We need to convert the DESeq object with our results to a `data.frame` object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with `all.x = TRUE`, and not to print non-matched lines in the second file with `all.y = FALSE`.
 Finally, results are exported to a file separated with tab. This file will contain quoted names. To remove them, the option `quote = ""` should be added.
 
 ```{r}
 ## add annotations as new columns to our results
-myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x="row.names", by.y="locusName", all.x = TRUE, all.y = FALSE)
+myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x = "row.names", by.y = "locusName", all.x = TRUE, all.y = FALSE)
 
 ## write annotated results to table
 write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
 ```
 
+This file can be opened in Excel.
 
 ## Data visualization
 ### Data transformation
