@@ -89,7 +89,7 @@ install.packages(pkgs, repos = "http://cran.us.r-project.org")
 ```
 
 
-# Get some help
+# How to get help
 
 * The `?` function.
 * The `help()` function: `help(package='DESeq2')`
@@ -97,7 +97,7 @@ install.packages(pkgs, repos = "http://cran.us.r-project.org")
 
 
 # Data and data structures
-## Bbuilt-in datasets
+## Built-in datasets
 
 ```{r}
 data(package='base')
@@ -130,9 +130,9 @@ read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t',
 ## variables
 
 * Restrictions on variable names.
-    + Technically amostly no restrictions on variable names
-    + But **Most R programmers**
-        * starts with lower case letters
+    + Technically almost no restrictions on variable names
+    + But, for **Most R programmers**, variable names... 
+        * start with lower case letters 
         * separate words in names with underscores
         * only use lower case letters, numbers and underscores
 ```{r}
