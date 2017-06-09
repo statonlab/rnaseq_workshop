@@ -24,7 +24,10 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 ```{r eval=FALSE}
 getwd()
+# For Mac user
 setwd('~/Desktop/rnaseq-workshop-2017')
+# For Windows user
+setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')
 ```
 
 
