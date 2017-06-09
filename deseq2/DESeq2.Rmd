@@ -1,6 +1,6 @@
 ---
 title: "RNASeq workshop DESeq2 2017"
-author: "Miriam Payá Milans"
+author: "Miriam PayÃ¡ Milans"
 date: "June 16, 2017"
 output: html_document
 ---
@@ -158,6 +158,7 @@ This file can be opened in Excel.
 > * Subset the significant genes using a more stringent padj value.
 > * Select up- and down-regulated genes in separate files.
 > * Filter out genes below a fold change threshold
+>
 > Also, you can look at different information on you sets of DE genes
 > * The total number of genes on each set
 > * The range of p values
@@ -184,6 +185,7 @@ vsd.myDESeqData <- varianceStabilizingTransformation(myDESeqData, fitType = "mea
 ---
 > The next visualization steps will use the data transformed with regularized logarithm
 > * How much do the plots change when using variance stabilizing transformation?
+>
 > Tip: you can plot multiple panels at a time in R, for example using `par(mfrow=c(1,2))` 
 ---
 
