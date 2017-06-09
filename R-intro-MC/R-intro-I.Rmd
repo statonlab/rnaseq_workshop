@@ -271,7 +271,8 @@ There are three commonly used subsetting operators: `[[`, `$`, and `[`
 * `$` is a shorthand for `[[`. It is useful when values are bound to character names. 
 * `$` is invalid for atomic vectors.
 * `[` is similar to `[[`. The difference is that `[[` can only return a single value, while `[[` can return multiple values.
-
+                          Here when you talk about difference, you may forget to change one '[[' to '[' 
+                          Another thing is: when I type in pbsc[[3]] it also gives multiple numbers, while pbsc[3] gives the 3rd list.
 ```{r}
 pbsc
 ```
