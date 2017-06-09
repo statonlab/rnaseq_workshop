@@ -14,7 +14,7 @@ library(DESeq2)
 ## Data pre-processing
 
 ### Count data files
-Our output files from HTSeq-count indicate genes on the first column and gene counts on the second column. This is how they look like.
+Our output files from HTSeq-count indicate genes on the first column and gene counts on the second column. This is what they look like.
 
 ![Count data files](datawehave.png)
 
@@ -51,7 +51,7 @@ myDESeqData <- DESeqDataSetFromHTSeqCount(sampleTable = mySampleTable,
                                          directory = './countData', design = ~pheno)
 myDESeqData
 ```
-
+The `design` parameter looks simple enough in this case, but it is *critical* to understand your experimental design.  Remember you can run `?DESeqDataSetFromHTSeqCount` for help on functions and their parameters.
 
 After loading our files, we'll have a data matrix showing gene expression levels, with genes in rows and samples in columns
 
@@ -95,7 +95,7 @@ myRes
 
 ### p value, adjusted p value (padj)  and alpha
 
-* P value is for a single test
+* P value is for a single test (meaning, every transcript gets its own test)
 * P values have to be adjusted to control for type I error (False Discovery Rate) with multiple testing
 * Default type I error cutoff __alpha__ is 0.1. This can be set in `results()`
 * Significant genes are those that padj is less than __alpha__
@@ -114,8 +114,9 @@ The function plotMA shows the log2 fold changes, coloring points in red if the a
 plotMA(myRes, main="lateFlower vs earlyFlower", ylim=c(-8,8))
 ```
 
+
 ## Export results into a tab separated file
-To complement the differential expression results, annotations are added to each row.
+To complement the differential expression results, annotations are added to each transcript.
 ```{r}
 myRes.sig = subset(myRes, padj < 0.05)
 myRes.sig
@@ -128,6 +129,7 @@ myRes.anno <- merge(as.data.frame(myRes.sig), anno, by.x="row.names", by.y="locu
 ## write annotated results to table
 write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
 ```
+
 
 
 ## Data visualization
@@ -159,7 +161,7 @@ pheatmap(vsd.heatmap)
 ```
 
 ### Heatmap of the sample-to-sample distances
-The distance between samples can be calculated using the `dist()` function of the transpose of the transformed count matrix. The heatmap shows the similarities between samples.
+The distance between samples can be calculated using the `dist()` function on the transpose of the transformed count matrix. The heatmap shows the similarities between samples.
 ```{r}
 sampleDists <- dist(t(assay(rl.myDESeqData)))
 sampleDistMatrix <- as.matrix(sampleDists)
@@ -168,11 +170,27 @@ my_palette <- colorRampPalette(c( "Blue", "white"))(n = 100)
 pheatmap(sampleDistMatrix, col=my_palette)
 ```
 
-### Principal Component Analysis (PCA) plot of samples
-This is another option to see distance of samples.
+### Principal Component Analysis (PCA)
+This is another option to visualize the distance between samples.
 
 ```{r}
 plotPCA(rl.myDESeqData[rownames(myRes.sig), ], intgroup="pheno")
 plotPCA(vsd.myDESeqData[rownames(myRes.sig), ], intgroup="pheno")
 ```
 
+## Try it yourself 
+### Significant changes in expression
+* We are typically interested in the transcripts that are most significantly up or down-regulated.  Return to the section *p value, adjusted p value (padj)  and alpha* for the below exercises.
+  - Try subsetting the data so that you have two objects: one containing all the significantly upregulated transcripts, the other the downregulated transcripts.
+* How can you summarize this information?
+  - the total number of genes in each set?
+  - the range of p-values?
+  - the average fold change?
+
+### Looking at specific gene families
+* Often, you will be interested in a specific gene family.  Your lab might study transporters or kinases and want to look at that data seperately.
+* Examine the annotations.  Try picking 1 or multiple GO terms that you think are interesting for this research project.
+  - Subset your data to just include genes with these GO terms.
+  - Rerun the below analyses.  How did the results change?
+*  In the above try it yourself, we subsetted the data to only include significantly up and down regulated transcripts.
+  - Make a table summarizing the annotations for up and down-regulated transcripts.
