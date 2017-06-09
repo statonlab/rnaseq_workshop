@@ -107,7 +107,7 @@ my.padj[1:30] ## compare your adjusted p values with the values from the results
 subset(myRes, !is.na(padj))[,'padj'][1:30]
 ```
 
-### Exploring results
+### Visualization of expression data after DESeq
 The function plotMA shows the log2 fold changes, coloring points in red if the adjusted p value is less than 0.05.
 
 ```{r}
@@ -152,7 +152,19 @@ write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
 
 This file can be opened in Excel.
 
-## Data visualization
+---
+> ### Exploring results
+> We have exported our annotated results into a plain text that can be easily used. The full set contains ~4000 results. > This can be difficult to interpret, so here are some options you can try to reduce this set.
+> * Subset the significant genes using a more stringent padj value.
+> * Select up- and down-regulated genes in separate files.
+> * Filter out genes below a fold change threshold
+> Also, you can look at different information on you sets of DE genes
+> * The total number of genes on each set
+> * The range of p values
+> * The average fold change
+---
+
+## Visualization after differential expression
 ### Data transformation
 * Gene expression data usually has inconsistent variance
 * The variance is usually very high for count data when the mean is low
@@ -169,15 +181,19 @@ rl.myDESeqData <- rlog(myDESeqData, fitType = "mean")
 vsd.myDESeqData <- varianceStabilizingTransformation(myDESeqData, fitType = "mean")
 ```
 
+---
+> The next visualization steps will use the data transformed with regularized logarithm
+> * How much do the plots change when using variance stabilizing transformation?
+> Tip: you can plot multiple panels at a time in R, for example using `par(mfrow=c(1,2))` 
+---
+
 ### Sample and gene clustering using heatmap
 ```{r}
 ## select count data only for the top 50 significant genes
 rl.heatmap <- assay(rl.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ]) 
-vsd.heatmap <- assay(vsd.myDESeqData[rownames(myRes.sig[order(myRes.sig$padj), ])[1:50], ])
 
 library(pheatmap)
 pheatmap(rl.heatmap)
-pheatmap(vsd.heatmap)
 ```
 
 ### Heatmap of the sample-to-sample distances
@@ -195,6 +211,13 @@ This is another option to see distance of samples.
 
 ```{r}
 plotPCA(rl.myDESeqData[rownames(myRes.sig), ], intgroup="pheno")
-plotPCA(vsd.myDESeqData[rownames(myRes.sig), ], intgroup="pheno")
+```
+
+## Saving R workspace
+After finishing, saving some results of the analysis into a file facilitates continuing with the analysis at another time point. Multiple R objects can be specified, separated by commas.
+
+```{r}
+save(myRes, file = "deseqRes.RData")
+# load(file="deseqRes.RData")
 ```
 
