@@ -270,10 +270,8 @@ There are three commonly used subsetting operators: `[[`, `$`, and `[`
 
 * `$` is a shorthand for `[[`. It is useful when values are bound to character names. 
 * `$` is invalid for atomic vectors.
-* `[` is similar to `[[`. The difference is that `[[` can only return a single value, while `[[` can return multiple values.
-                         
-                         Here when you talk about difference, you may forget to change the first'[[' to '['.
-                          Another thing is: when I type in pbsc[[3]] it also gives multiple numbers, while pbsc[3] gives the 3rd list.                            When I read through the below material, I realized the difference occured when extracting elements from a vector  
+* `[` is similar to `[[`. The difference is that `[[` can only return a single element, while `[[` can return multiple elements.
+
 ```{r}
 pbsc
 ```
@@ -324,8 +322,10 @@ my_sequence
 my_template = c('G','C','T','A')
 names(my_template) = c('g', 'c', 't', 'a')
 my_template
+
 my_template['a'] 
-my_template[c('g','g','a','c')] # I added these two lines and hope it will help them to understand how this worked for the below code. I am not sure what do you feel. It helps me to understand:)
+my_template[c('g','g','a','c')] 
+
 my_template[my_sequence] # yeah!!
 # you will see how useful this is when you use the ggplot2 package for data visualization.
 ```
