@@ -431,7 +431,7 @@ pbsc_matrix[ , 2,drop=FALSE]
 
 ## Factors
 
-When you import data from a file, R treats string columns as factors by default.
+When you import data from a file, R treats string (character) columns as factors by default.
 
 ```{r}
 pbsc = read.csv('PBSC-comma.txt', header = TRUE)
@@ -457,6 +457,9 @@ factor_x1
 
 # the vector does not have to contain all categories
 factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b'))
+factor_x2
+# the vector need to contain values only from categories. Otherwise, it will generate NA
+factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b','d','e'))
 factor_x2
 ```
 
