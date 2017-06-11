@@ -181,11 +181,12 @@ packageVersion('DESeq2')
 ## read this page if this doesn't work for you:
 ## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906</code></pre>
 <hr>
-<blockquote>
-<h2 id="mins-exercise">2 mins exercise</h2>
-Install the bioconductor package <em>Rsubread</em> version <em>release-3.4</em> from github.
+<div id="exercise" class="section level3">
+<h3>Exercise</h3>
+<ul>
+<li>Install the bioconductor package <em>Rsubread</em> version <em>release-3.4</em> from github.</li>
+</ul>
 <hr>
-</blockquote>
 <blockquote>
 <h2 id="more-package-installation-methods">more package installation methods</h2>
 <ul>
@@ -207,6 +208,7 @@ require('ggplot2')</code></pre>
 <pre class="r"><code>pkgs = c('plyr', 'dplyr')
 install.packages(pkgs, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
 </blockquote>
+</div>
 </div>
 <div id="how-to-get-help" class="section level1">
 <h1>How to get help</h1>
@@ -237,17 +239,35 @@ mpg</code></pre>
 </div>
 <div id="loading-data" class="section level2">
 <h2>loading data</h2>
-<p>Two most common data loading functions: <strong><em><code>read.csv()</code></em></strong> and <strong><em><code>read.table()</code></em></strong>.</p>
+<p>Two most common data loading functions:</p>
+<ul>
+<li><code>read.csv()</code></li>
+<li><code>read.table()</code></li>
+</ul>
+<p>Both <code>read.csv()</code> and <code>read.table()</code> reads a flat file (e.g., csv file or delimited file) in table format. <em>By default</em>, <code>read.csv()</code> reads comma separated values and <code>read.table()</code> reads <em>space or tab</em> separated values. But you can change the default and use these two functions interchangeably.</p>
 <pre class="r"><code>?read.csv
-read.csv('PBSC-comma.txt')
-read.csv('PBSC-tab.txt', sep = '\t')
+read.csv('PBSC-comma.txt') # the file does not have to be a csv file.
+read.csv('PBSC-tab.txt') # get wierd result
+read.csv('PBSC-tab.txt', sep = '\t') # change the default delimiter.
 read.csv('PBSC-comma.txt', header=FALSE)</code></pre>
 <pre class="r"><code>read.table('PBSC-tab.txt', header=TRUE) # does the header argument work?
-read.table('PBSC-tab.txt', header=TRUE, comment.char = '')
+# open the file and see what the first line look like.
+read.table('PBSC-tab.txt', header=TRUE, comment.char = '') # change the default comment character
 
 # an example use case: load gtf file
 read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t', 
+         comment.char = '')
+
+read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t', 
          comment.char = '#')</code></pre>
+<hr>
+<div id="exercise-1" class="section level3">
+<h3>Exercise</h3>
+<ul>
+<li>Put one of your own csv, txt or gtf files in the working directory and try to read the data into R with these two functions.</li>
+</ul>
+<hr>
+</div>
 </div>
 <div id="variables" class="section level2">
 <h2>variables</h2>
@@ -289,7 +309,7 @@ pbsc
 pbsc &lt;- read.csv('PBSC-comma.txt', header = TRUE)
 
 pbsc</code></pre>
-<p>You might see the <code>&lt;-</code> assignment in people’s code. It is the same as <code>=</code>.</p>
+<p>You might see the <code>&lt;-</code> assignment in people’s code. It is the same as <code>=</code>. But I prefer using the <code>=</code> operator.</p>
 </div>
 <div id="data-structures" class="section level2">
 <h2>data structures</h2>
@@ -302,7 +322,10 @@ pbsc</code></pre>
 </ul>
 <pre class="r"><code>is.data.frame(pbsc)
 
-str(pbsc)</code></pre>
+str(pbsc) # str() is a very useful function, you will use this function very often.
+
+# dimension
+dim(pbsc) # 55 rows and 5 columns</code></pre>
 <ul>
 <li>Vectors
 <ul>
@@ -327,11 +350,12 @@ pbsc[1, ]
 is.vector(pbsc[1, ])
 is.data.frame(pbsc[1, ])
 
+# extract the column 'G' from a one-row data frame.
 pbsc[1,]$G</code></pre>
 <ul>
 <li>atomic vectors vs. lists
 <ul>
-<li>atomic vectors are homogeneous. They can only have one type of values.</li>
+<li>atomic vectors are homogeneous. They can only have one type of elements.</li>
 <li>lists are homogeneous or heterogenous.</li>
 </ul></li>
 </ul>
@@ -348,7 +372,7 @@ my_list = list(a=1:3, b=c('a', 'b', 'd'))
 my_list
 my_list$a
 
-# any types of data can be an element of a list.
+# any types of data can be an element of a list. let's add a data frame to our list.
 my_l2 = list(a=1:3, b=c('a', 'b', 'd'), df=pbsc)
 my_l2
 my_l2$df
@@ -356,14 +380,15 @@ my_l2[1]</code></pre>
 <ul>
 <li>matrix
 <ul>
-<li>two dimentional</li>
+<li>two dimensions</li>
 <li><strong>homogeneous</strong></li>
 </ul></li>
 </ul>
-<pre class="r"><code>my_matrix = matrix(1:12, nrow=3, ncol=4)
+<pre class="r"><code>## we use the matrix() function to create a matrix
+my_matrix = matrix(1:12, nrow=3, ncol=4) # a matrix with all numeric values
 my_matrix
 
-my_matrix_2 = matrix(letters[1:12], nrow=3, ncol=4)
+my_matrix_2 = matrix(letters[1:12], nrow=3, ncol=4) # a matrix with all character values
 my_matrix_2
 
 # convert a heterogeneous data frame to a homogeneous matrix
@@ -384,9 +409,10 @@ is.vector(my_m3[1, ])</code></pre>
 <ul>
 <li><code>$</code> is a shorthand for <code>[[</code>. It is useful when values are bound to character names.</li>
 <li><code>$</code> is invalid for atomic vectors.</li>
-<li><code>[</code> is similar to <code>[[</code>. The difference is that <code>[[</code> can only return a single element, while <code>[[</code> can return multiple elements.</li>
+<li><code>[</code> is similar to <code>[[</code>. The difference is that <code>[[</code> can only return a <strong>single element</strong>, but <code>[[</code> can return <strong>multiple elements</strong>.</li>
 </ul>
-<pre class="r"><code>pbsc</code></pre>
+<pre class="r"><code># our data
+pbsc</code></pre>
 <ul>
 <li><strong><em>A data frame is also a list.</em></strong>
 <ul>
@@ -397,7 +423,9 @@ is.vector(my_m3[1, ])</code></pre>
 is.list(pbsc)</code></pre>
 <div id="subsetting-atomic-vectors" class="section level3">
 <h3>subsetting atomic vectors</h3>
-<pre class="r"><code>my_v1 = letters[1:10]
+<pre class="r"><code># use a built-in dataset
+letters 
+my_v1 = letters[1:10] # get the first 10 elements in the vector letters
 my_v1
 
 # access single value
@@ -405,19 +433,19 @@ my_v1[1]
 my_v1[[2]]
 
 # access multiple values
-my_v1[1:5]
-my_v1[c(1,5,9)]
-my_v1[c(1,3,3,3,1:10)] # get some elements repeatedly
+my_v1[1:5] # first 5 elements
+my_v1[c(1,5,9)] # elements 1, 5, and 9
+my_v1[c(1,3,3,3,1:10)] # get some elements repeatedly! very useful!
 
 my_v1[[1:5]] # this won't work
 
 # access elements by names
-names(my_v1) = LETTERS[1:10]
+names(my_v1) = LETTERS[1:10] # assign names to elements with the `names()` function
 my_v1
-my_v1['A']
+my_v1['A'] # now we can access elements by element names.
 my_v1[c('A','C','B')]
 
-my_v1$A # this won't work!</code></pre>
+my_v1$A # this won't work! Because '$' does work for atomic vectors!</code></pre>
 <pre class="r"><code># A use case for accessing elements by names.
 
 my_sequence = sample(c('g', 'c', 't', 'a'), 20, replace = TRUE)
@@ -431,11 +459,19 @@ my_template
 my_template['a'] 
 my_template[c('g','g','a','c')] 
 
-my_template[my_sequence] # yeah!!
-# you will see how useful this is when you use the ggplot2 package for data visualization.</code></pre>
+my_template[my_sequence] # yeah!</code></pre>
+<hr>
 </div>
-<div id="subsetting-data-frame" class="section level3">
-<h3>subsetting data frame</h3>
+<div id="exercises" class="section level3">
+<h3>Exercises</h3>
+<ul>
+<li>Create a few numeric or character vectors and try to extract some elements from the vectors.</li>
+<li>Assign names to vector elements and extract elements by names.</li>
+</ul>
+<hr>
+</div>
+<div id="subsetting-data-frames" class="section level3">
+<h3>subsetting data frames</h3>
 <pre class="r"><code># acess a single cell from data frame.
 pbsc[1,2]
 pbsc[[1,2]] # this will work since we are accessing single value.
@@ -446,17 +482,18 @@ pbsc[-(1:5),] # remove the first five rows and keep the remaining
 pbsc[, 1:2] # columns from 1 to 2
 pbsc[1:5, 1:2] # subsetting by rows and columns
 
-pbsc[[1:5, ]] # this won't work
+pbsc[[1:5, ]] # this won't work because we try to use '[[' to extract multiple elements!
 
 # get one column from the data frame and remain the data structure.
 pbsc[, 3]
 is.vector(pbsc[, 3])
 
+# what if we want to extract one column but keep the data frame structure.
 pbsc[, 3, drop=FALSE]
 is.vector(pbsc[, 3, drop=FALSE])
 is.data.frame(pbsc[, 3, drop=FALSE])
 
-# elements in the index don't have to be unique.
+# we can use the same position numbers repeatedly.
 pbsc[, c(1:4, 4, 4)]
 nrow(pbsc)
 pbsc[c(1:2, 2, 2, 3:55), ]
@@ -464,10 +501,53 @@ pbsc[c(1:2, 2, 2, 3:55), ]
 # use $
 pbsc$A
 pbsc$X.Base</code></pre>
+<hr>
+</div>
+<div id="exercise-2" class="section level3">
+<h3>Exercise</h3>
+<ul>
+<li>Get odd columns from the built-in datase <strong>mtcars</strong> (hint: you may need the <code>seq()</code> functin to create a integer sequence consisting of odd numbers).</li>
+</ul>
+<p>Your answer should look like this:</p>
+<pre><code>                    cyl  hp    wt vs gear
+Mazda RX4             6 110 2.620  0    4
+Mazda RX4 Wag         6 110 2.875  0    4
+Datsun 710            4  93 2.320  1    4
+Hornet 4 Drive        6 110 3.215  1    3
+Hornet Sportabout     8 175 3.440  0    3
+Valiant               6 105 3.460  1    3
+Duster 360            8 245 3.570  0    3
+Merc 240D             4  62 3.190  1    4
+Merc 230              4  95 3.150  1    4
+Merc 280              6 123 3.440  1    4
+Merc 280C             6 123 3.440  1    4
+Merc 450SE            8 180 4.070  0    3
+Merc 450SL            8 180 3.730  0    3
+Merc 450SLC           8 180 3.780  0    3
+Cadillac Fleetwood    8 205 5.250  0    3
+Lincoln Continental   8 215 5.424  0    3
+Chrysler Imperial     8 230 5.345  0    3
+Fiat 128              4  66 2.200  1    4
+Honda Civic           4  52 1.615  1    4
+Toyota Corolla        4  65 1.835  1    4
+Toyota Corona         4  97 2.465  1    3
+Dodge Challenger      8 150 3.520  0    3
+AMC Javelin           8 150 3.435  0    3
+Camaro Z28            8 245 3.840  0    3
+Pontiac Firebird      8 175 3.845  0    3
+Fiat X1-9             4  66 1.935  1    4
+Porsche 914-2         4  91 2.140  0    5
+Lotus Europa          4 113 1.513  1    5
+Ford Pantera L        8 264 3.170  0    5
+Ferrari Dino          6 175 2.770  0    5
+Maserati Bora         8 335 3.570  0    5
+Volvo 142E            4 109 2.780  1    4</code></pre>
+<hr>
 </div>
 <div id="subsetting-list" class="section level3">
 <h3>subsetting list</h3>
-<pre class="r"><code>my_l2 = list(a=1:3, b=c('a', 'b', 'd'), df=pbsc)
+<pre class="r"><code># create a list
+my_l2 = list(a=1:3, b=c('a', 'b', 'd'), df=pbsc)
 my_l2
 
 # use $
@@ -478,7 +558,7 @@ my_l2[1:3]
 my_l2[c(1,1,1,1,2,2,3)]
 
 my_l2[[1:3]] # this won't work!</code></pre>
-<p><strong>When <code>[</code> is applied to a list, it always returns a list. To access elements from an element within a list, we need the <code>[[</code> operator.</strong></p>
+<p><strong>When <code>[</code> is applied to a list, it always returns a list. To access elements from within an element within a list, we need the <code>[[</code> operator.</strong></p>
 <pre class="r"><code>my_l2[1]
 is.list(my_l2[1])
 
@@ -493,6 +573,14 @@ is.vector(my_l2[[1]])
 my_l2[[1]][2] # this will return the second value from element 'a' in list 'my_l2'
 my_l2[[3]]
 my_l2[[3]]$G</code></pre>
+<hr>
+</div>
+<div id="exercise-3" class="section level3">
+<h3>Exercise</h3>
+<ul>
+<li>Extract the columns ‘G’ and ‘C’ from the data frame <strong>pbsc</strong> within the list <strong>my_l2</strong>.</li>
+</ul>
+<hr>
 </div>
 <div id="subsetting-matrix" class="section level3">
 <h3>subsetting matrix</h3>
@@ -540,14 +628,17 @@ factor_x1
 # the vector does not have to contain all categories
 factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b'))
 factor_x2
-# the vector need to contain values only from categories. Otherwise, it will generate NA
+# the vector need to contain values only from the predefined categories. Otherwise, it will generate NAs
 factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b','d','e'))
 factor_x2</code></pre>
 <p><strong>If you don’t provide the category set, it will use the unique values from the vector as the category set</strong></p>
 <pre class="r"><code>factor_x3 = factor(x = c('a', 'c', 'e', 'e', 'f', 'a'))
 factor_x3</code></pre>
 <p><strong>How to understand that factors are built on top of integer vectors?</strong></p>
-<pre class="r"><code>factor_x1
+<pre class="r"><code># the type of factors is 'integer'!
+typeof(factor_x3)
+
+factor_x1
 as.integer(factor_x1)
 
 factor_x3
@@ -559,7 +650,32 @@ as.integer(str_v1)
 
 str_v2 = c('1', '3', '4', '1') 
 as.integer(str_v2)</code></pre>
-<p><strong>How are factor elements mapped to integers?</strong> * The factor elements are mapped to an integer <strong>sequence that starts from 1</strong>, and the mapping order is <strong>determined by the order of factor levels</strong>.</p>
+<p><strong>What happens if we combine two factors?</strong></p>
+<pre class="r"><code># combine two numeric vectors
+num_x1 = c(1,2,3)
+num_x2 = 5:10
+c(num_x1, num_x2)
+
+# combine two character vectors
+str_x1 = c('a', 'b', 'c')
+str_x2 = c('123', '45')
+c(str_x1, str_x2)
+
+# combine two factors
+factor_x1 = factor(levels = c('high', 'low'), x = c('high', 'low','low', 'high', 'high', 'low'))
+factor_x1
+factor_x2 = factor(levels = c('medium', 'low'), x = c('medium', 'low','low', 'medium', 'low', 'low'))
+factor_x2
+c(factor_x1, factor_x2) # when combining two factors, factors are first converted to integer vectors and merged.
+
+# how to get a merged factor as our result.
+factors_list = list(factor_x1, factor_x2)
+factors_list
+unlist(factors_list)</code></pre>
+<p><strong>How are factor elements mapped to integers?</strong></p>
+<ul>
+<li>The factor elements are mapped to an integer <strong>sequence that starts from 1</strong>, and the mapping order is <strong>determined by the order of factor levels</strong>.</li>
+</ul>
 <pre class="r"><code>factor_x1 = factor(levels = c('a', 'b', 'c'), x = c('b', 'c', 'b', 'a', 'b'))
 factor_x1
 as.integer(factor_x1)
@@ -569,6 +685,13 @@ factor_x4
 as.integer(factor_x4)
 as.integer(factor_x1)</code></pre>
 <p>Different level orders can result in different data analysis results due to the change in reference order. Next time when you do a linear regression analysis, try to reset the level orders for your categorical variables and see that happens.</p>
+<p><strong>Set the reference level with <code>relevel()</code> function</strong></p>
+<pre><code>+ the reference level matters when you dummy code a categorical variable for statistical analysis.</code></pre>
+<pre class="r"><code>## by default, the first level is the reference level.
+factor_x4
+
+factor_x4_ref = relevel(factor_x4, ref = 'b')
+factor_x4_ref # now the level 'b' becomes the first and the others are moved down.</code></pre>
 </div>
 <div id="write-data-into-files" class="section level2">
 <h2>Write data into files</h2>
