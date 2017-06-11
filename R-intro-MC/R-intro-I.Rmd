@@ -73,6 +73,7 @@ packageVersion('DESeq2')
 <hr>
 
 ### Exercise
+
 * Install the bioconductor package *Rsubread* version *release-3.4* from github.
 
 <hr>
@@ -161,6 +162,7 @@ read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t',
 
 <hr>
 ### Exercise
+
 * Put one of your own csv, txt or gtf files in the working directory and try to read the data into R with these two functions.
 
 <hr>
@@ -251,7 +253,7 @@ pbsc[1,]$G
 
 * atomic vectors vs. lists
     + atomic vectors are homogeneous. They can only have one type of elements.
-    + lists are homogeneous or heterogenous. 
+    + lists are homogeneous or heterogenous. They can have different types of elements. 
     
 ```{r}
 my_vector = c(1, 3, 5) # c() function combine values into a vector.
@@ -371,6 +373,7 @@ my_template[my_sequence] # yeah!
 
 <hr>
 ### Exercises
+
 * Create a few numeric or character vectors and try to extract some elements from the vectors.
 * Assign names to vector elements and extract elements by names.
 
@@ -413,7 +416,8 @@ pbsc$X.Base
 
 <hr>
 ### Exercise
-* Get odd columns from the built-in datase **mtcars** (hint: you may need the `seq()` functin to create a integer sequence consisting of odd numbers).
+
+* Get odd columns from the built-in datase **mtcars** (hint: you may need the `seq()` functin to create a integer sequence consisting of odd numbers. Use `?seq` to open the help documentation).
 
 Your answer should look like this:
 
@@ -497,6 +501,7 @@ my_l2[[3]]$G
 
 <hr>
 ### Exercise
+
 * Extract the columns 'G' and 'C' from the data frame **pbsc** within the list **my_l2**.
 
 <hr>
@@ -635,7 +640,7 @@ Different level orders can result in different data analysis results due to the 
 
 **Set the reference level with `relevel()` function**
 
-    + the reference level matters when you dummy code a categorical variable for statistical analysis.
+* the reference level matters when you dummy code a categorical variable for statistical analysis.
     
 ```{r}
 ## by default, the first level is the reference level.

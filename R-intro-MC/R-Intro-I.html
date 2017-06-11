@@ -356,7 +356,7 @@ pbsc[1,]$G</code></pre>
 <li>atomic vectors vs. lists
 <ul>
 <li>atomic vectors are homogeneous. They can only have one type of elements.</li>
-<li>lists are homogeneous or heterogenous.</li>
+<li>lists are homogeneous or heterogenous. They can have different types of elements.</li>
 </ul></li>
 </ul>
 <pre class="r"><code>my_vector = c(1, 3, 5) # c() function combine values into a vector.
@@ -506,7 +506,7 @@ pbsc$X.Base</code></pre>
 <div id="exercise-2" class="section level3">
 <h3>Exercise</h3>
 <ul>
-<li>Get odd columns from the built-in datase <strong>mtcars</strong> (hint: you may need the <code>seq()</code> functin to create a integer sequence consisting of odd numbers).</li>
+<li>Get odd columns from the built-in datase <strong>mtcars</strong> (hint: you may need the <code>seq()</code> functin to create a integer sequence consisting of odd numbers. Use <code>?seq</code> to open the help documentation).</li>
 </ul>
 <p>Your answer should look like this:</p>
 <pre><code>                    cyl  hp    wt vs gear
@@ -686,7 +686,9 @@ as.integer(factor_x4)
 as.integer(factor_x1)</code></pre>
 <p>Different level orders can result in different data analysis results due to the change in reference order. Next time when you do a linear regression analysis, try to reset the level orders for your categorical variables and see that happens.</p>
 <p><strong>Set the reference level with <code>relevel()</code> function</strong></p>
-<pre><code>+ the reference level matters when you dummy code a categorical variable for statistical analysis.</code></pre>
+<ul>
+<li>the reference level matters when you dummy code a categorical variable for statistical analysis.</li>
+</ul>
 <pre class="r"><code>## by default, the first level is the reference level.
 factor_x4
 
