@@ -161,6 +161,7 @@ read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t',
 
 
 <hr>
+
 ### Exercise
 
 * Put one of your own csv, txt or gtf files in the working directory and try to read the data into R with these two functions.
@@ -372,6 +373,7 @@ my_template[my_sequence] # yeah!
 
 
 <hr>
+
 ### Exercises
 
 * Create a few numeric or character vectors and try to extract some elements from the vectors.
@@ -415,6 +417,7 @@ pbsc$X.Base
 
 
 <hr>
+
 ### Exercise
 
 * Get odd columns from the built-in datase **mtcars** (hint: you may need the `seq()` functin to create a integer sequence consisting of odd numbers. Use `?seq` to open the help documentation).
@@ -500,6 +503,7 @@ my_l2[[3]]$G
 
 
 <hr>
+
 ### Exercise
 
 * Extract the columns 'G' and 'C' from the data frame **pbsc** within the list **my_l2**.
