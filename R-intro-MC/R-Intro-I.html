@@ -138,7 +138,10 @@ $(document).ready(function () {
 <div id="set-working-directory" class="section level1">
 <h1>Set working directory</h1>
 <pre class="r"><code>getwd()
-setwd('~/Desktop/rnaseq-workshop-2017')</code></pre>
+# For Mac user
+setwd('~/Desktop/rnaseq-workshop-2017')
+# For Windows user (Thanks to Fang!)
+setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')</code></pre>
 </div>
 <div id="install-packages" class="section level1">
 <h1>Install packages</h1>
@@ -147,19 +150,6 @@ setwd('~/Desktop/rnaseq-workshop-2017')</code></pre>
 </ul>
 <pre class="r"><code>install.packages('ggplot2')
 library('ggplot2')
-require('ggplot2')</code></pre>
-<ul>
-<li>Install package from local source file
-<ul>
-<li>google ‘ggplot2 tar.gz’</li>
-<li><a href="https://cran.r-project.org/web/packages/ggplot2/index.html" class="uri">https://cran.r-project.org/web/packages/ggplot2/index.html</a></li>
-</ul></li>
-</ul>
-<pre class="r"><code>remove.packages('ggplot2')
-## restart R
-library(ggplot2)
-require('ggplot2')
-install.packages('ggplot2_2.2.1.tar.gz', repos = NULL)
 require('ggplot2')</code></pre>
 <ul>
 <li>Install bioconductor packages
@@ -189,28 +179,50 @@ install_github('Bioconductor-mirror/DESeq2', ref = 'release-3.3')
 packageVersion('DESeq2')
 ## read this page if this doesn't work for you:
 ## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906</code></pre>
+<blockquote>
+<h2 id="more-package-installation-methods">more package installation methods</h2>
 <ul>
-<li>Install package from command line
+<li>Install package from local source file</li>
+<li>google ‘ggplot2 tar.gz’</li>
+<li><a href="https://cran.r-project.org/web/packages/ggplot2/index.html" class="uri">https://cran.r-project.org/web/packages/ggplot2/index.html</a></li>
+</ul>
+<pre class="r"><code>remove.packages('ggplot2')
+## restart R
+library(ggplot2)
+require('ggplot2')
+install.packages('ggplot2_2.2.1.tar.gz', repos = NULL)
+require('ggplot2')</code></pre>
 <ul>
-<li>create an R script named ‘install-r-packages.R’ and put the following content into this file.</li>
+<li>Install package from command line</li>
+<li>create an R script named <code>install-r-packages.R</code> and put the following &gt;content into this file.</li>
 <li>Open your terminal and run command: <code>RScript install-r-packages.R</code></li>
-</ul></li>
 </ul>
 <pre class="r"><code>pkgs = c('plyr', 'dplyr')
 install.packages(pkgs, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+</blockquote>
 </div>
-<div id="get-some-help" class="section level1">
-<h1>Get some help</h1>
+<div id="how-to-get-help" class="section level1">
+<h1>How to get help</h1>
 <ul>
-<li>The <code>?</code> function.</li>
+<li>The <code>?</code> function.
+<ul>
+<li><code>?install.packages</code></li>
+<li><code>?\</code>?``</li>
+</ul></li>
 <li>The <code>help()</code> function: <code>help(package='DESeq2')</code></li>
+<li>The <code>swirl()</code> package is an interactive tutorial for learning R</li>
 <li><strong>google</strong></li>
 </ul>
+<div id="comments" class="section level3">
+<h3>Comments</h3>
+<p>Note that like many programming language, lines that start with a <code>#</code> are comments and are not interpreted.</p>
+<pre class="r"><code># You can write notes and annotate your code in comments!</code></pre>
+</div>
 </div>
 <div id="data-and-data-structures" class="section level1">
 <h1>Data and data structures</h1>
-<div id="bbuilt-in-datasets" class="section level2">
-<h2>Bbuilt-in datasets</h2>
+<div id="built-in-datasets" class="section level2">
+<h2>Built-in datasets</h2>
 <pre class="r"><code>data(package='base')
 data(package='ggplot2')
 data('mpg', package='ggplot2')
@@ -235,10 +247,10 @@ read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t',
 <ul>
 <li>Restrictions on variable names.
 <ul>
-<li>Technically amostly no restrictions on variable names</li>
-<li>But <strong>Most R programmers</strong>
+<li>Technically almost no restrictions on variable names</li>
+<li>But, for <strong>Most R programmers</strong>, variable names…
 <ul>
-<li>starts with lower case letters</li>
+<li>start with lower case letters</li>
 <li>separate words in names with underscores</li>
 <li>only use lower case letters, numbers and underscores</li>
 </ul></li>
@@ -265,7 +277,12 @@ get('#')</code></pre>
 <li>Assign the imported data to a variable.</li>
 </ul>
 <pre class="r"><code>pbsc = read.csv('PBSC-comma.txt', header = TRUE)
+pbsc
+
+pbsc &lt;- read.csv('PBSC-comma.txt', header = TRUE)
+
 pbsc</code></pre>
+<p>You might see the <code>&lt;-</code> assignment in people’s code. It is the same as <code>=</code>.</p>
 </div>
 <div id="data-structures" class="section level2">
 <h2>data structures</h2>
@@ -360,7 +377,7 @@ is.vector(my_m3[1, ])</code></pre>
 <ul>
 <li><code>$</code> is a shorthand for <code>[[</code>. It is useful when values are bound to character names.</li>
 <li><code>$</code> is invalid for atomic vectors.</li>
-<li><code>[</code> is similar to <code>[[</code>. The difference is that <code>[[</code> can only return a single value, while <code>[[</code> can return multiple values.</li>
+<li><code>[</code> is similar to <code>[[</code>. The difference is that <code>[[</code> can only return a single element, while <code>[[</code> can return multiple elements.</li>
 </ul>
 <pre class="r"><code>pbsc</code></pre>
 <ul>
@@ -404,6 +421,9 @@ my_template = c('G','C','T','A')
 names(my_template) = c('g', 'c', 't', 'a')
 my_template
 
+my_template['a'] 
+my_template[c('g','g','a','c')] 
+
 my_template[my_sequence] # yeah!!
 # you will see how useful this is when you use the ggplot2 package for data visualization.</code></pre>
 </div>
@@ -415,6 +435,7 @@ pbsc[[1,2]] # this will work since we are accessing single value.
 
 # access multiple values
 pbsc[1:5, ] # rows from 1 to 5
+pbsc[-(1:5),] # remove the first five rows and keep the remaining
 pbsc[, 1:2] # columns from 1 to 2
 pbsc[1:5, 1:2] # subsetting by rows and columns
 
@@ -491,7 +512,7 @@ pbsc_matrix[ , 2,drop=FALSE]</code></pre>
 </div>
 <div id="factors" class="section level2">
 <h2>Factors</h2>
-<p>When you import data from a file, R treat string columns as factors by default.</p>
+<p>When you import data from a file, R treats string (character) columns as factors by default.</p>
 <pre class="r"><code>pbsc = read.csv('PBSC-comma.txt', header = TRUE)
 pbsc$X.Base
 
@@ -511,6 +532,9 @@ factor_x1
 
 # the vector does not have to contain all categories
 factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b'))
+factor_x2
+# the vector need to contain values only from categories. Otherwise, it will generate NA
+factor_x2 = factor(levels = c('a', 'b', 'c'), x = c('b', 'b', 'b', 'b', 'b','d','e'))
 factor_x2</code></pre>
 <p><strong>If you don’t provide the category set, it will use the unique values from the vector as the category set</strong></p>
 <pre class="r"><code>factor_x3 = factor(x = c('a', 'c', 'e', 'e', 'f', 'a'))

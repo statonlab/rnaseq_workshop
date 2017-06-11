@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 getwd()
 # For Mac user
 setwd('~/Desktop/rnaseq-workshop-2017')
-# For Windows user
+# For Windows user (Thanks to Fang!)
 setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')
 ```
 
@@ -41,18 +41,6 @@ library('ggplot2')
 require('ggplot2')
 ```
 
-* Install package from local source file
-    + google 'ggplot2 tar.gz'
-    + https://cran.r-project.org/web/packages/ggplot2/index.html
-```{r eval=FALSE}
-remove.packages('ggplot2')
-## restart R
-library(ggplot2)
-require('ggplot2')
-install.packages('ggplot2_2.2.1.tar.gz', repos = NULL)
-require('ggplot2')
-```
-
 * Install bioconductor packages
     + google 'deseq2 bioconductor'
     + https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
@@ -63,7 +51,6 @@ biocLite("DESeq2")
 require('DESeq2')
 packageVersion('DESeq2')
 ```
-
 
 * Install package from github
     + go to https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
@@ -82,19 +69,34 @@ packageVersion('DESeq2')
 ## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906
 ```
 
-* Install package from command line
-    + create an R script named `install-r-packages.R` and put the following content into this file.
-    + Open your terminal and run command: `RScript install-r-packages.R`
-
-```{r eval=FALSE}
-pkgs = c('plyr', 'dplyr')
-install.packages(pkgs, repos = "http://cran.us.r-project.org")
-```
+> ## more package installation methods
+>* Install package from local source file
+>    + google 'ggplot2 tar.gz'
+>    + https://cran.r-project.org/web/packages/ggplot2/index.html
+>```{r eval=FALSE}
+>remove.packages('ggplot2')
+>## restart R
+>library(ggplot2)
+>require('ggplot2')
+>install.packages('ggplot2_2.2.1.tar.gz', repos = NULL)
+>require('ggplot2')
+>```
+>
+>* Install package from command line
+>    + create an R script named `install-r-packages.R` and put the following >content into this file.
+>    + Open your terminal and run command: `RScript install-r-packages.R`
+>
+>```{r eval=FALSE}
+>pkgs = c('plyr', 'dplyr')
+>install.packages(pkgs, repos = "http://cran.us.r-project.org")
+>```
 
 
 # How to get help
 
 * The `?` function.
+    + `?install.packages`
+    + `?\`?\``
 * The `help()` function: `help(package='DESeq2')`
 * The `swirl()` package is an interactive tutorial for learning R 
 * **google**
