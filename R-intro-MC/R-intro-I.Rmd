@@ -63,11 +63,19 @@ require('DESeq2')
 install.packages('devtools')
 require('devtools')
 install_github('Bioconductor-mirror/DESeq2')
+## install a specific version.
 install_github('Bioconductor-mirror/DESeq2', ref = 'release-3.3')
 packageVersion('DESeq2')
 ## read this page if this doesn't work for you:
 ## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906
 ```
+
+<hr>
+>## 2 mins exercise
+>
+>Install the bioconductor package *Rsubread* version *release-3.4* from github.
+<hr>
+
 
 > ## more package installation methods
 >* Install package from local source file
@@ -96,7 +104,7 @@ packageVersion('DESeq2')
 
 * The `?` function.
     + `?install.packages`
-    + `?\`?\``
+    + **?\`?\`**, **?\`+\`**
 * The `help()` function: `help(package='DESeq2')`
 * The `swirl()` package is an interactive tutorial for learning R 
 * **google**
