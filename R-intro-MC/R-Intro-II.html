@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Ming Chen" />
+<meta name="author" content="Staton Lab" />
 
 
 <title>R introduction: part II</title>
@@ -117,7 +117,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">R introduction: part II</h1>
-<h4 class="author"><em>Ming Chen</em></h4>
+<h4 class="author"><em>Staton Lab</em></h4>
 <h4 class="date"><em>6/1/2017</em></h4>
 
 </div>
@@ -211,7 +211,7 @@ workshop_comment %&gt;%
 </div>
 <div id="data-manipulation" class="section level1">
 <h1>Data manipulation</h1>
-<p>We are going to learn five important functions from the <strong>dplyr</strong> package. These five functions allows you to do a vast majority of data manipulation.</p>
+<p>We are going to learn five important functions from the <strong>dplyr</strong> package. These five functions allow you to do the vast majority of data manipulation.</p>
 <ul>
 <li><code>filter()</code>: filter rows</li>
 <li><code>select()</code>: select variables by names</li>
@@ -303,7 +303,7 @@ mutate(pbsc,
 </div>
 <div id="operating-on-subsets-of-a-data-frame-with-summarise" class="section level2">
 <h2>Operating on subsets of a data frame with <code>summarise()</code></h2>
-<p><code>summarise()</code> is similar to <code>mutate()</code>. You operate on existing variables to new variables. But the new variables have to be one single value.</p>
+<p><code>summarise()</code> is similar to <code>mutate()</code>. You operate on existing variables, creating new variables. Note the new variables have to be single value (hence, summarised).</p>
 <pre class="r"><code>summarise(pbsc, GC = G + C) # this won't work because the new variable has length &gt; 1
 
 summarise(pbsc, average_G = mean(G)) # calculate the average of G content.</code></pre>

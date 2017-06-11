@@ -1,11 +1,11 @@
 ---
 title: "R introduction: part I"
-author: "Ming Chen"
+author: "Staton Lab"
 date: "5/29/2017"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 ```
 
