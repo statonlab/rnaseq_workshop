@@ -1,6 +1,6 @@
 ---
 title: "RNASeq workshop DESeq2 2017"
-author: "Miriam Pay√° Milans"
+author: "Miriam Pay· Milans"
 date: "June 16, 2017"
 output: html_document
 ---
@@ -120,14 +120,12 @@ Only significant results are exported.
 myRes.sig <- subset(myRes, padj < 0.05)
 myRes.sig
 ```
-To complement the differential expression results, annotations are added to each row. The annotation data table is loaded using `read.table()`. It is a tab separated file with many empty fields.
+To complement the differential expression results, annotations are added to each row. The annotation data table is loaded using `read.csv()`. It is a tab separated file with many empty fields.
 * When `header` is turned on, the names on the first row are used as column names
-* The option `fill` is activated to add blank fields where data is missing
-* `quote = "\""` is set to avoid interpretation of single quotes in gene names, such as 5'-nucleotidase 
 
 ```{r}
 ## load annotation data
-anno <- read.table("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE, quote = "\"")
+anno <- read.csv("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE, quote = "\"")
 head(anno)
 ```
 
@@ -158,7 +156,7 @@ This file can be opened in Excel.
 > * Subset the significant genes using a more stringent padj value.
 > * Select up- and down-regulated genes in separate files.
 > * Filter out genes below a fold change threshold
->
+
 > Also, you can look at different information on you sets of DE genes
 > * The total number of genes on each set
 > * The range of p values
@@ -171,7 +169,7 @@ This file can be opened in Excel.
 * The variance is usually very high for count data when the mean is low
 * Transformation methods are applied to remove the dependence of the variance on the mean
 * Useful for graphical visualization or clustering
-
+>
 ### The common transformation methods
 * Transformation of data on the log2 scale which has been normalized with respect to library size
     + Regularized logarithm transformation
