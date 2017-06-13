@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 
 # Set working directory
-First, lets download the data for this class: https://github.com/statonlab/rnaseq_workshop/raw/master/R-intro-MC.zip. You can put the file on your destkop and unzip the file. The path to your data folder should be `~/Desktop/R-intro-MC` for Mac users or `~C:/Users/your-user-name/Desktop/R-intro-MC` for windows users.
+First, lets download the data for this class: https://github.com/statonlab/rnaseq_workshop/raw/master/R-intro-MC.zip. You can put the file on your destkop and unzip the file. The path to your data folder should be `~/Desktop/R-intro-MC` for Mac users or `C:/Users/your-user-name/Desktop/R-intro-MC` for windows users.
 
 R has a working directory, which is like being in a certain location in the terminal. That location is where R will automatically look for files and write new files. You can find out where this location is with setwd.
 ```{r eval=FALSE}
@@ -49,6 +49,11 @@ The require command loads and attaches the package to this session. Basically, i
 
 ```{r eval=FALSE}
 install.packages('ggplot2')
+```
+
+We have two functions to attach a package to your R session. The `library()` function returns error if the package loading fails, while the `require()` functions return a logical value FALSE if the package loading fails.
+
+```{r}
 library('ggplot2')
 require('ggplot2')
 ```
