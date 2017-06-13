@@ -59,12 +59,17 @@ We have two functions to attach a package to your R session. The `library()` fun
 ```{r}
 library('ggplot2')
 require('ggplot2')
+
+# when loading a package that is not installed or does not exit.
+library('ggplot22') # returns an error
+require('ggplot22') # returns some warning messages.
 ```
 
 ### Install bioconductor packages
 Bioconductor is a collection of tools for the analysis and comprehension of high-throughput genomic data. It includes many differential gene expression statistical packages, including DESeq2. It has its own system for package installation.
-    + google 'deseq2 bioconductor'
-    + https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
+
+* google 'deseq2 bioconductor'
+* https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
 
 ```{r eval=FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -149,7 +154,7 @@ Note that like many programming language, lines that start with a `#` are commen
 
 # Data and data structures
 ## Built-in datasets
-These datasets are available to all R installations, they are great for learning and practicing.
+These datasets are available to all R installations or come with the package you installed, they are great for learning and practicing.
 ```{r}
 data(package='base')
 data(package='ggplot2')
