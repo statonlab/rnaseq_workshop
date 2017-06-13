@@ -21,9 +21,13 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 
 # Set working directory
-
+R has a working directory, which is like being in a certain location in the terminal. That location is where R will automatically look for files and write new files. You can find out where this location is with setwd.
 ```{r eval=FALSE}
 getwd()
+```
+
+You can also set to a new location, anywhere in your file system. We want this to be a folder on your Desktop for now. 
+```{r eval=FALSE}
 # For Mac user
 setwd('~/Desktop/rnaseq-workshop-2017')
 # For Windows user (Thanks to Fang!)
