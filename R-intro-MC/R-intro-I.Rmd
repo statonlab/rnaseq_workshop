@@ -38,7 +38,7 @@ setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')
 # Install packages
 R has many packages of code that you can use. You can explore these through [CRAN](https://cran.r-project.org/). We will download some basic packages to demonstrate how to access those modules. ggplot2 is an R package that does plotting, i.e. creates very nice graphics.
 
-* Install package from CRAN
+## Install package from CRAN
 The install.packages command will download the files through the internet and install them on your local computer (so you only need to do this once for a package).
 
 The require command loads and attaches the package to this session. Basically, it tells R that you want to use the package in this session and to make all its functions available.
