@@ -395,14 +395,14 @@ my_sequence = sample(c('g', 'c', 't', 'a'), 20, replace = TRUE)
 my_sequence
 
 # how to convert lower case bases to upper case bases?
-my_template = c('G','C','T','A')
-names(my_template) = c('g', 'c', 't', 'a')
-my_template
+my_mapping = c('G','C','T','A')
+names(my_mapping) = c('g', 'c', 't', 'a')
+my_mapping
 
-my_template['a'] 
-my_template[c('g','g','a','c')] 
+my_mapping['a'] 
+my_mapping[c('g','g','a','c')] 
 
-my_template[my_sequence] # yeah!
+my_mapping[my_sequence] # yeah!
 ```
 
 
