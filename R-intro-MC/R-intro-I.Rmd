@@ -26,7 +26,7 @@ R has a working directory, which is like being in a certain location in the term
 getwd()
 ```
 
-You can also set to a new location, anywhere in your file system. We want this to be a folder on your Desktop for now. 
+You can also set to a new location, anywhere in your file system. We want this to be a folder on your Desktop for now. Create the folder "rnaseq-workshop-2017" then run this command:
 ```{r eval=FALSE}
 # For Mac user
 setwd('~/Desktop/rnaseq-workshop-2017')
@@ -36,6 +36,7 @@ setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')
 
 
 # Install packages
+R has many modules of code that you can use. You can explore these through [CRAN](https://cran.r-project.org/). We will download some basic packages to demonstrate how to access those modules. ggplot2 is an R package that does plotting, i.e. creates very nice graphics.
 
 * Install package from CRAN
 
