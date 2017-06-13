@@ -82,13 +82,7 @@ packageVersion('DESeq2')
 ## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906
 ```
 
-<hr>
 
-### Exercise
-
-* Install the bioconductor package *Rsubread* version *release-3.4* from github.
-
-<hr>
 
 
 > ## more package installation methods
@@ -118,12 +112,21 @@ packageVersion('DESeq2')
 
 * The `?` function.
     + `?install.packages`
-    + **?\`?\`**, **?\`+\`**
     + `` ?`?` ``
     + `` ?`+` ``
-* The `help()` function: `help(package='DESeq2')`
+* The `help()` function
+    + `help(install.packages)`
+    + `help(package='DESeq2')`
 * The `swirl()` package is an interactive tutorial for learning R 
 * **google**
+
+<hr>
+
+### Exercise
+
+* Install the swirl package.
+
+<hr>
 
 ### Comments
 Note that like many programming language, lines that start with a `#` are comments and are not interpreted. 
@@ -134,7 +137,7 @@ Note that like many programming language, lines that start with a `#` are commen
 
 # Data and data structures
 ## Built-in datasets
-
+These datasets are available to all R installations, they are great for learning and practicing.
 ```{r}
 data(package='base')
 data(package='ggplot2')
@@ -149,7 +152,7 @@ Two most common data loading functions:
 * `read.csv()` 
 * `read.table()`
     
-Both `read.csv()` and `read.table()` reads a flat file (e.g., csv file or delimited file) in table format. *By default*, `read.csv()` reads comma separated values and `read.table()` reads *space or tab* separated values. But you can change the default and use these two functions interchangeably.
+Both `read.csv()` and `read.table()` read a flat file (e.g., csv file or delimited file) in table format. *By default*, `read.csv()` reads comma separated values and `read.table()` reads *space or tab* separated values. But you can change the default and use these two functions interchangeably.
 
 ```{r}
 ?read.csv
