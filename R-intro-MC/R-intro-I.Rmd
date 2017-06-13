@@ -119,7 +119,8 @@ packageVersion('DESeq2')
 * The `?` function.
     + `?install.packages`
     + **?\`?\`**, **?\`+\`**
-    + `` ?\`?\` ``, `?\`+\``
+    + `` ?`?` ``
+    + `` ?`+` ``
 * The `help()` function: `help(package='DESeq2')`
 * The `swirl()` package is an interactive tutorial for learning R 
 * **google**
