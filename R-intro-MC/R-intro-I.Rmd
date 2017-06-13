@@ -21,18 +21,22 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 
 
 # Set working directory
+First, lets download the data for this class: https://github.com/statonlab/rnaseq_workshop/raw/master/R-intro-MC.zip. You can put the file on your destkop and unzip the file. The path to your data folder should be `~/Desktop/R-intro-MC` for Mac users or `~C:/Users/your-user-name/Desktop/R-intro-MC` for windows users.
+
 R has a working directory, which is like being in a certain location in the terminal. That location is where R will automatically look for files and write new files. You can find out where this location is with setwd.
 ```{r eval=FALSE}
 getwd()
 ```
 
-You can also set to a new location, anywhere in your file system. We want this to be a folder on your Desktop for now. Create the folder "rnaseq-workshop-2017" then run this command:
+You can also set to a new location, anywhere in your file system. We want this to be a folder on your Desktop for now. We can do this through the R command.
 ```{r eval=FALSE}
 # For Mac user
-setwd('~/Desktop/rnaseq-workshop-2017')
+setwd('~/Desktop/R-intro-MC')
 # For Windows user (Thanks to Fang!)
-setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')
+setwd('C:/Users/yourusername/Desktop/R-intro-MC')
 ```
+
+Also, you can set the working directory through RStudio by clicking **Session->Set working directory->Choose directory**.
 
 
 # Install packages
