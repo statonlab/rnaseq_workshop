@@ -38,17 +38,18 @@ setwd('C:/Users/fliu21/Desktop/rnaseq-workshop-2017')
 # Install packages
 R has many packages of code that you can use. You can explore these through [CRAN](https://cran.r-project.org/). We will download some basic packages to demonstrate how to access those modules. ggplot2 is an R package that does plotting, i.e. creates very nice graphics.
 
-## Install package from CRAN
+### Install package from CRAN
 The install.packages command will download the files through the internet and install them on your local computer (so you only need to do this once for a package).
 
 The require command loads and attaches the package to this session. Basically, it tells R that you want to use the package in this session and to make all its functions available.
 
 ```{r eval=FALSE}
 install.packages('ggplot2')
+library('ggplot2')
 require('ggplot2')
 ```
 
-* Install bioconductor packages
+### Install bioconductor packages
 Bioconductor is a collection of tools for the analysis and comprehension of high-throughput genomic data. It includes many differential gene expression statistical packages, including DESeq2. It has its own system for package installation.
     + google 'deseq2 bioconductor'
     + https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
@@ -60,20 +61,23 @@ require('DESeq2')
 packageVersion('DESeq2')
 ```
 
-* Install package from github
+### Install package from github
+This is a much less often used form of getting bioconductor packages installed into R but it can come in very handy. For example, if you need to get an older version of the software (sometimes needed for DESeq2 depending on your OS).
     + go to https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
 
 ```{r eval=FALSE}
 remove.packages('DESeq2')
-# restart R
+# From R Studio menu Session, click Restart R
 require('DESeq2')
 
 install.packages('devtools')
 require('devtools')
 install_github('Bioconductor-mirror/DESeq2')
-## install a specific version.
+
+## to install a specific version.
 install_github('Bioconductor-mirror/DESeq2', ref = 'release-3.3')
 packageVersion('DESeq2')
+
 ## read this page if this doesn't work for you:
 ## https://stackoverflow.com/questions/29992066/rcpp-warning-directory-not-found-for-option-l-usr-local-cellar-gfortran-4-8/29993906#29993906
 ```
