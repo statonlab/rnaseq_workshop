@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 # Set working directory
 First, lets download the data for this class: https://github.com/statonlab/rnaseq_workshop/raw/master/R-intro-MC.zip. You can put the file on your destkop and unzip the file. The path to your data folder should be `~/Desktop/R-intro-MC` for Mac users or `C:/Users/your-user-name/Desktop/R-intro-MC` for windows users.
 
-R has a working directory, which is like being in a certain location in the terminal. That location is where R will automatically look for files and write new files. You can find out where this location is with `setwd()`.
+R has a working directory, which is like being in a certain location in the terminal. That location is where R will automatically look for files and write new files. You can find out where this location is with `getwd()`.
 ```{r eval=FALSE}
 getwd()
 ```
@@ -408,7 +408,7 @@ my_v1
 my_v1['A'] # now we can access elements by element names.
 my_v1[c('A','C','B')]
 
-my_v1$A # this won't work! Because '$' does work for atomic vectors!
+my_v1$A # this won't work! Because '$' does not work for atomic vectors!
 ```
 
 ```{r}
@@ -417,11 +417,13 @@ my_v1$A # this won't work! Because '$' does work for atomic vectors!
 my_sequence = sample(c('g', 'c', 't', 'a'), 20, replace = TRUE)
 my_sequence
 
-# how to convert lower case bases to upper case bases?
+# how to convert lowercase bases to uppercase bases?
+# we create an uppercase base vector and name each element with the corresponding lowercase letter.
 my_mapping = c('G','C','T','A')
 names(my_mapping) = c('g', 'c', 't', 'a')
 my_mapping
 
+# we select elements from the uppercase vector by using the lowercase vector as the selecting vector.
 my_mapping['a'] 
 my_mapping[c('g','g','a','c')] 
 
