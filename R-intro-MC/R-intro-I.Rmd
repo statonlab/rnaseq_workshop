@@ -80,7 +80,9 @@ packageVersion('DESeq2')
 
 ### Install package from github
 This is a much less often used form of getting bioconductor packages installed into R but it can come in very handy. For example, if you need to get an older version of the software (sometimes needed for DESeq2 depending on your OS).
-    + go to https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
+
+* go to https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html
+* find the **Git source** link at the bottom of the page.
 
 ```{r eval=FALSE}
 remove.packages('DESeq2')
