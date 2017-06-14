@@ -126,6 +126,13 @@ packageVersion('DESeq2')
 >install.packages(pkgs, repos = "http://cran.us.r-project.org")
 >```
 
+<hr>
+
+### Exercise
+
+* Install the swirl package.
+
+<hr>
 
 # How to get help
 
@@ -137,15 +144,27 @@ packageVersion('DESeq2')
     + `help(install.packages)`
     + `help(package='DESeq2')`
 * The `swirl()` package is an interactive tutorial for learning R 
+    + swirl homepage: http://swirlstats.com/
+    + courses list: https://github.com/swirldev/swirl_courses#swirl-courses
+    
+    ```
+    # load the library
+    library(swirl)
+    
+    # install an interactive course
+    install_course('R Programming')
+    
+    # start an interactive course
+    swirl()
+    
+    # exit swirl()
+    bye()
+    ```
+ 
+ 
 * **google**
 
-<hr>
 
-### Exercise
-
-* Install the swirl package.
-
-<hr>
 
 ### Comments
 Note that like many programming language, lines that start with a `#` are comments and are not interpreted. 
