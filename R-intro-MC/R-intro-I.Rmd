@@ -751,3 +751,13 @@ summary(lm(mpg~., data = mtcars))
 # close the connection
 sink()
 ```
+
+## Save workspace
+
+The workspace is your current working environment which includes all the variables, objects and functions you have already created or loaded. You can save this environment into a file. When you load the file into R next time, all the variables, objects and functions will be avaiable to you.
+
+Two ways to save workspace:
+* Save through RStudio: go to **Session->Save Workspace->Choose Directory**
+* Save through R command: `save.image('my-workspace.RData')`
+
+To load workspace to RStudio, you can click **Session->Load Workspace**
