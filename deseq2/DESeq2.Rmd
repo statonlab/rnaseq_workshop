@@ -1,10 +1,11 @@
 ---
-title: "RNASeq workshop DESeq2 2017"
+title: "RNASeq workshop 2017; DESeq2"
 author: "Miriam Payá Milans"
 date: "June 16, 2017"
 output: html_document
 ---
 
+Create a deseq2 folder and change the path below to point to it.
 
 ```{r warning=F, message=F}
 setwd("E:/UT/rnaseq_ws/2017/deseq2")
@@ -12,13 +13,19 @@ library(DESeq2)
 ```
 
 ## Data pre-processing
+In this lab, we will use the count results after applying the same pipeline taught in the course on multiple and larger fastq files. [Download the deseq_data.zip](https://github.com/statonlab/rnaseq_workshop/raw/master/deseq2/deseq_data.zip) file into your deseq2 folder and unzip it.
 
 ### Count data files
-Our output files from HTSeq-count indicate genes on the first column and gene counts on the second column. This is how they look like.
+After running HTSeq-count, we get output files on 2-column format, where the first column contain the gene names and the second column the gene counts, or number of reads mapped to that gene. This is how they look like.
 
 ![Count data files](datawehave.png)
 
-The first step is to load the files into the R session using the `DESeqDataSetFromHTSeqCount()` function, which generates an object recognized by `DESeq()`. To do so, we need to generate a table specifying the sample name in the first column, the count file name on the second column and metadata on the remaining columns.
+The first step is to load the files into the R session using the `DESeqDataSetFromHTSeqCount()` function, which generates an object recognized by `DESeq()`. To do so, we need to generate a table specifying the following:
+* The sample name in the first column, 
+* The count file name on the second column 
+* Metadata on the remaining columns
+
+We are going to collect all this information from the file names.
 
 ```{r}
 ## get file names
@@ -43,7 +50,7 @@ With this table, we are ready to load the count data.
 
 ### DESeqDataSet object: the data structure that `DESeq()` can recognize
 
-The core function for differential analysis is `DESeq()`. But before we can use `DESeq()`, we need to preprocess our data so that the `DESeq()` can recognize it.
+The core function for differential analysis is `DESeq()`. But before we can use it, we need to preprocess our data so that the `DESeq()` function can recognize it.
 
 ```{r}
 ## get DESeqDataSet object
@@ -64,7 +71,7 @@ head(counts(myDESeqData))
 ```
 
 ### Pre-filtering
-Filtering of low count data is not necessary to run DESeq, but it can reduce memory usage.
+Filtering of low count data is not necessary to run DESeq, but it can reduce memory usage in cases where large data files are being used.
 
 ```{r}
 dim(myDESeqData)
@@ -85,47 +92,45 @@ summary(myRes)
 myRes
 ```
 
-### Reasons for NA values
-* In cases where all samples have zero counts, log2FoldChange, pvalue and padj will be NA
+### Cases where NA values appear
+* In cases where all samples have zero counts, log2FoldChange, pvalue and padj will be NA. We won't see that here because we already filtered out these genes
 * When a sample has an extreme count outlier, the pvalue and padj will also be NA
 * Genes with low mean normalized counts are filtered out by automatic independent filtering and padj is NA.
-    + The goal is to filter out tests that have no or little chance of showing significant evidence
-    + This filtering results in increased detection power at the same type I error (or False Discovery Rate)
+
+The goal is to filter out tests that have no or little chance of showing significant evidence
+    + This filtering results in increased detection power at the same False Discovery Rate (FDR, also type I error)
     + Independent filtering can be turned off in `DESeq()`
 
-### p value, adjusted p value (padj)  and alpha
+### p-value, adjusted p-value (padj)  and alpha
 
-* P value is for a single test
-* P values have to be adjusted to control for type I error (False Discovery Rate) with multiple testing
-* Default type I error cutoff __alpha__ is 0.1. This can be set in `results()`
-* Significant genes are those that padj is less than __alpha__
+On the results table, p-values are calculated with a single test. These need to be adjusted to control for type I error (False Discovery Rate) with multiple testing. By default, `DESeq()` applies the Benjamini-Hochberg procedure (BH). The result of multitesting are adjusted p-values, which are used to determine significant genes when they are below a cutoff. By default, FDR cutoff `alpha` is set to 0.1, although it can be modified in `results()`
 
 ```{r}
 pvalues <- subset(myRes, !is.na(padj))[,'pvalue']
-my.padj <- p.adjust(pvalues, method='BH') ## calculate adjusted p value
-my.padj[1:30] ## compare your adjusted p values with the values from the results table
+my.padj <- p.adjust(pvalues, method='BH') ## calculate adjusted p-value
+my.padj[1:30] ## compare your adjusted p-values with the values from the results table
 subset(myRes, !is.na(padj))[,'padj'][1:30]
 ```
 
 ### Visualization of expression data after DESeq
-The function plotMA shows the log2 fold changes, coloring points in red if the adjusted p value is less than 0.05.
+The function plotMA shows the log2 fold changes, coloring points in red if the adjusted p-value is less than 0.05.
 
 ```{r}
 plotMA(myRes, main="lateFlower vs earlyFlower", ylim=c(-8,8))
 ```
 
 ## Export results into a tab separated file
-Only significant results are exported.
+Here, we are going to export significant results only.
 ```{r}
 myRes.sig <- subset(myRes, padj < 0.05)
 myRes.sig
 ```
 To complement the differential expression results, annotations are added to each row. The annotation data table is loaded using `read.csv()`. It is a tab separated file with many empty fields.
-* When `header` is turned on, the names on the first row are used as column names
+* When `header` equals `TRUE`, the names on the first row are used as column names
 
 ```{r}
 ## load annotation data
-anno <- read.csv("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", fill=TRUE, quote = "\"")
+anno <- read.csv("Ppersica_298_v2.1.annotation_info.txt", header=TRUE, sep="\t", stringsAsFactors = F)
 head(anno)
 ```
 
@@ -137,8 +142,9 @@ anno <- anno[!duplicated(anno[,2]),]
 head(anno)
 ```
 
-We are ready to merge the tables. We need to convert the DESeq object with our results to a `data.frame` object and select what column on each file contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with `all.x = TRUE`, and not to print non-matched lines in the second file with `all.y = FALSE`.
-Finally, results are exported to a file separated with tab. This file will contain quoted names. To remove them, the option `quote = ""` should be added.
+We are ready to merge the tables. We need to convert the DESeq object with our results to a `data.frame` object and select the column on each file that contains the name to use for merging. Also, we need to specify to print all the rows from our results whether they are present in the second file with `all.x = TRUE`, and not to print non-matched lines in the second file with `all.y = FALSE`.
+
+Finally, results are exported to a file separated with tab. This file will contain quoted names; to remove them, you can add the option `quote = ""`.
 
 ```{r}
 ## add annotations as new columns to our results
@@ -151,7 +157,7 @@ write.table(myRes.anno, file="myRes_sig.txt", sep = "\t", row.names = F)
 This file can be opened in Excel.
 
 ---
-> ### Exploring results
+> ### Further exploration of results
 > We have exported our annotated results into a plain text that can be easily used. The full set contains ~4000 results. > This can be difficult to interpret, so here are some options you can try to reduce this set.
 > * Subset the significant genes using a more stringent padj value.
 > * Select up- and down-regulated genes in separate files.
@@ -159,7 +165,7 @@ This file can be opened in Excel.
 
 > Also, you can look at different information on you sets of DE genes
 > * The total number of genes on each set
-> * The range of p values
+> * The range of p-values
 > * The average fold change
 ---
 
@@ -168,10 +174,10 @@ This file can be opened in Excel.
 * Gene expression data usually has inconsistent variance
 * The variance is usually very high for count data when the mean is low
 * Transformation methods are applied to remove the dependence of the variance on the mean
-* Useful for graphical visualization or clustering
->
-### The common transformation methods
-* Transformation of data on the log2 scale which has been normalized with respect to library size
+* They are useful for graphical visualization or clustering
+
+### Transformation methods
+Common transformations produce transformed data on the log2 scale which has been normalized with respect to library size. These are:
     + Regularized logarithm transformation
     + Variance stabilizing transformation, so that the variance becomes constant relative to the mean
 
@@ -184,7 +190,7 @@ vsd.myDESeqData <- varianceStabilizingTransformation(myDESeqData, fitType = "mea
 > The next visualization steps will use the data transformed with regularized logarithm
 > * How much do the plots change when using variance stabilizing transformation?
 >
-> Tip: you can plot multiple panels at a time in R, for example using `par(mfrow=c(1,2))` 
+> Tip: you can plot multiple panels at a time in R, for example using `par(mfrow=c(1,2))`. This may not work with all plotting functions.
 ---
 
 ### Sample and gene clustering using heatmap
@@ -221,3 +227,32 @@ save(myRes, file = "deseqRes.RData")
 # load(file="deseqRes.RData")
 ```
 
+## Preparing results for GO enrichment analysis
+On the annotation file, there is a column with GO terms. GO enrichment can be done using the whole set of gene GO term annotations as reference to compare with the set of GO terms in our DEG. Next, we are going to process the GO terms contained in `anno` and `myRes.anno` in the format specified by the online tool [AgriGO](http://bioinfo.cau.edu.cn/agriGO/). 
+* First column is an ID
+* Second column is a GO accession
+
+On the annotation, there are genes with more than one GO accesion, separated by commas. We need to print one gene and one GO per line.
+* `strsplit` creates lists with the result of splitting a character string by the `split` character
+* `rep` is for replicate, print multiple copies of values in a vector
+    + The vector to replicate contains the locus Names
+    + The repeat times is given by counting the number of GO/locus after the split
+* `unlist` simplifies a list structure into a simple vector
+
+```{r}
+head(anno$GO)
+## print one gene and GO per line for the annotation file
+s <- strsplit(anno$GO, split = ",")
+anno.go <- data.frame(locus = rep(anno$locusName, sapply(s, length)), GO = unlist(s))
+write.table(anno.go, file="go_ref_anno.txt", sep = " ", quote = F , row.names = F, col.names = F)
+
+## check the column with locus names on myRes
+head(myRes.anno, 2)
+## print one gene and GO each line for my results
+s <- strsplit(myRes.anno$GO, split = ",")
+myRes.go <- data.frame(locus = rep(myRes.anno$Row.names, sapply(s, length)), GO = unlist(s))
+write.table(myRes.go, file="go_myRes.txt", sep = " ", quote = F, row.names = F, col.names = F)
+```
+
+With these two files, we are ready to move into [AgriGO](http://bioinfo.cau.edu.cn/agriGO/analysis.php).
+Select "Customized annotation" on both boxes and paste the content of `go_myRes.txt` on top and paste or load the reference annotation at the bottom. Finally, click submit and explore the results.
