@@ -219,11 +219,13 @@ read.table('Arabidopsis_thaliana.h20.gtf', header=FALSE, sep='\t',
 
 ### Exercise
 
-* Put one of your own csv, txt or gtf files in the working directory and try to read the data into R with these two functions.
+* Put one of your own csv, txt or gtf files into the working directory and try to read the data into R with these two functions.
 
 <hr>
 
 ## variables
+
+We have loaded data into the memory, but we can't access the data. Because we didn't assign the data to a name. When we assign a value to a name (like `x = 5`), we create a variable.
 
 * Restrictions on variable names.
     + Technically almost no restrictions on variable names
