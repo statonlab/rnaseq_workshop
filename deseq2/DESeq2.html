@@ -124,12 +124,11 @@ $(document).ready(function () {
 </div>
 
 
-<p>Create a deseq2 folder and change the path below to point to it.</p>
-<pre class="r"><code>setwd(&quot;E:/UT/rnaseq_ws/2017/deseq2&quot;)
-library(DESeq2)</code></pre>
 <div id="data-pre-processing" class="section level2">
 <h2>Data pre-processing</h2>
-<p>In this lab, we will use the count results after applying the same pipeline taught in the course on multiple and larger fastq files. <a href="https://github.com/statonlab/rnaseq_workshop/raw/master/deseq2/deseq_data.zip">Download the deseq_data.zip</a> file into your deseq2 folder and unzip it.</p>
+<p>In this lab, we will use the count results after applying the same pipeline taught in the workshop on multiple and larger fastq files. <a href="https://github.com/statonlab/rnaseq_workshop/raw/master/deseq2/deseq2.zip">Download the deseq2.zip</a> file into your Desktop and unzip it; it will create a deseq2 folder. Change the path in <code>setwd()</code> to point to this folder.</p>
+<pre class="r"><code>setwd(&quot;E:/UT/rnaseq_ws/2017/deseq2&quot;)
+library(DESeq2)</code></pre>
 <div id="count-data-files" class="section level3">
 <h3>Count data files</h3>
 <p>After running HTSeq-count, we get output files on 2-column format, where the first column contain the gene names and the second column the gene counts, or number of reads mapped to that gene. This is how they look like.</p>

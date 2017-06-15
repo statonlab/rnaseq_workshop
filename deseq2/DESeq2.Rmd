@@ -5,15 +5,13 @@ date: "June 16, 2017"
 output: html_document
 ---
 
-Create a deseq2 folder and change the path below to point to it.
+## Data pre-processing
+In this lab, we will use the count results after applying the same pipeline taught in the workshop on multiple and larger fastq files. [Download the deseq2.zip](https://github.com/statonlab/rnaseq_workshop/raw/master/deseq2/deseq2.zip) file into your Desktop and unzip it; it will create a deseq2 folder. Change the path in `setwd()` to point to this folder.
 
 ```{r warning=F, message=F}
 setwd("E:/UT/rnaseq_ws/2017/deseq2")
 library(DESeq2)
 ```
-
-## Data pre-processing
-In this lab, we will use the count results after applying the same pipeline taught in the course on multiple and larger fastq files. [Download the deseq_data.zip](https://github.com/statonlab/rnaseq_workshop/raw/master/deseq2/deseq_data.zip) file into your deseq2 folder and unzip it.
 
 ### Count data files
 After running HTSeq-count, we get output files on 2-column format, where the first column contain the gene names and the second column the gene counts, or number of reads mapped to that gene. This is how they look like.
@@ -248,6 +246,7 @@ write.table(anno.go, file="go_ref_anno.txt", sep = " ", quote = F , row.names = 
 
 ## check the column with locus names on myRes
 head(myRes.anno, 2)
+
 ## print one gene and GO each line for my results
 s <- strsplit(myRes.anno$GO, split = ",")
 myRes.go <- data.frame(locus = rep(myRes.anno$Row.names, sapply(s, length)), GO = unlist(s))
