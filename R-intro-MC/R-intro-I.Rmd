@@ -138,6 +138,7 @@ packageVersion('DESeq2')
 
 * The `?` function.
     + `?install.packages`
+    + `??"install packages"`
     + `` ?`?` ``
     + `` ?`+` ``
 * The `help()` function
